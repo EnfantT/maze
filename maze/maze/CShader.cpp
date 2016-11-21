@@ -39,9 +39,7 @@ CShader::CShader()
 
 CShader::~CShader()
 {
-	if (m_program > 0)
-		glDeleteProgram(m_program);
-
+	// m_program should be destroyed via Unload.
 	glDeleteBuffers(1, &m_VAO);
 	glDeleteBuffers(1, &m_VBO);
 }
@@ -111,6 +109,8 @@ int CShader::Load(void)
 
 	// After link the shaders to a program,
 	// We don't need them anymore.
+	glDetachShader(m_program, vertShader);
+	glDetachShader(m_program, fragShader);
 	glDeleteShader(vertShader);
 	glDeleteShader(fragShader);
 
@@ -129,7 +129,7 @@ int CShader::ApplyMVP(void)
 	if (m_program == 0)
 		return -EFAULT;
 
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	glUseProgram(m_program);
@@ -141,7 +141,7 @@ int CShader::ApplyMVP(void)
 	}
 
 	glBindVertexArray(m_VAO);
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
 	glBindVertexArray(0);
 	return 0;
 }
@@ -155,13 +155,15 @@ int CShader::Map(void)
 		float x, y, z, w;
 	} vertices[] = {
 		// Vertex
-		{ -0.5f, -0.5f, -0.5f, 1.0f },
-		{ 0.5f, -0.5f, -0.5f, 1.0f },
-		{ 0.0f, 0.5f, -0.5f, 1.0f },
+		{ -0.25f, 0.0f, 0.0f, 1.0f },
+		{ -0.25f, 0.25f, 0.0f, 1.0f },
+		{ 0.0f, 0.25f, 0.0f, 1.0f },
+		{ 0.0f, 0.0f, 0.0f, 1.0f },
 		// Color
 		{ 1.0f, 0.0f, 0.0f, 1.0f },
 		{ 0.0f, 1.0f, 0.0f, 1.0f },
 		{ 0.0f, 0.0f, 1.0f, 1.0f },
+		{ 1.0f, 0.0f, 0.0f, 1.0f },
 	};
 
 	if (m_program == 0) {
@@ -186,8 +188,11 @@ int CShader::Map(void)
 	cout << "position index: " << position << endl;
 	if (position >= 0) {
 		glEnableVertexAttribArray(position);
+		// [nicesj]
+		// Because of "stride" value, I lost 3 more hours.
+		// I set it with wrong value (too big one), the triangle is disappeared.
 		glVertexAttribPointer(position, 4, GL_FLOAT, GL_FALSE,
-			sizeof(vertices) / 2,
+			sizeof(float) * 4,
 			(void *)0);
 	}
 
@@ -196,7 +201,7 @@ int CShader::Map(void)
 	if (color >= 0) {
 		glEnableVertexAttribArray(color);
 		glVertexAttribPointer(color, 4, GL_FLOAT, GL_FALSE,
-			sizeof(vertices) / 2,
+			sizeof(float) * 4,
 			(void *)(sizeof(vertices) / 2));
 	}
 
@@ -215,14 +220,19 @@ int CShader::Map(void)
 
 int CShader::Unload(void)
 {
+	if (m_program > 0)
+		glDeleteProgram(m_program);
+	m_program = 0;
 	return 0;
 }
 
 int CShader::Translate(float x, float y, float z)
 {
 	mat4x4 t;
+
 	mat4x4_translate(t, x, y, z);
 	mat4x4_mul(m_mvp_matrix, m_mvp_matrix, t);
+
 	m_mvp_updated = GL_TRUE;
 	return 0;
 }
@@ -238,6 +248,7 @@ int CShader::Scale(float x, float y, float z, float scale)
 	a[2][2] = z;
 
 	mat4x4_scale(m_mvp_matrix, a, scale);
+
 	m_mvp_updated = GL_TRUE;
 	return 0;
 }
@@ -245,6 +256,7 @@ int CShader::Scale(float x, float y, float z, float scale)
 int CShader::Rotate(float x, float y, float z, float angle)
 {
 	mat4x4_rotate(m_mvp_matrix, m_mvp_matrix, x, y, z, angle);
+
 	m_mvp_updated = GL_TRUE;
 	return 0;
 }

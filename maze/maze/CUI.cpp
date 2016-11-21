@@ -110,6 +110,7 @@ int CUI::CreateContext(int w, int h, const char *title)
 	 */
 	gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 
+	glViewport(0, 0, 800, 600);
 	return 0;
 }
 
