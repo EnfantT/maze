@@ -35,6 +35,9 @@ CShader::CShader()
 {
 	mat4x4_identity(m_mvp_matrix);
 	m_mvp_updated = GL_TRUE;
+
+	glEnable(GL_CULL_FACE);
+	glEnable(GL_DEPTH_TEST);
 }
 
 CShader::~CShader()
@@ -42,6 +45,7 @@ CShader::~CShader()
 	// m_program should be destroyed via Unload.
 	glDeleteBuffers(1, &m_VAO);
 	glDeleteBuffers(1, &m_VBO);
+	glDeleteBuffers(1, &m_EBO);
 }
 
 void CShader::Destroy(void)
@@ -129,8 +133,8 @@ int CShader::ApplyMVP(void)
 	if (m_program == 0)
 		return -EFAULT;
 
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glUseProgram(m_program);
 	
@@ -141,7 +145,8 @@ int CShader::ApplyMVP(void)
 	}
 
 	glBindVertexArray(m_VAO);
-	glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+	//glDrawArrays(GL_TRIANGLE_FAN, 0, 9);
+	glDrawElements(GL_TRIANGLE_FAN, 18, GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 	return 0;
 }
@@ -155,15 +160,35 @@ int CShader::Map(void)
 		float x, y, z, w;
 	} vertices[] = {
 		// Vertex
-		{ -0.25f, 0.0f, 0.0f, 1.0f },
-		{ -0.25f, 0.25f, 0.0f, 1.0f },
-		{ 0.0f, 0.25f, 0.0f, 1.0f },
-		{ 0.0f, 0.0f, 0.0f, 1.0f },
-		// Color
+		{ -1.0f, -1.0f, -1.0f, 1.0f },
+		{ -1.0f, 1.0f, -1.0f, 1.0f },
+		{ 1.0f, 1.0f, -1.0f, 1.0f },
+		{ 1.0f, -1.0f, -1.0f, 1.0f },
+		{ 1.0f, -1.0f, 1.0f, 1.0f },
+		{ -1.0f, -1.0f, 1.0f, 1.0f },
+		{ -1.0f, 1.0f, 1.0f, 1.0f },
+		{ 1.0f, 1.0f, 1.0f, 1.0f },
+		// color
 		{ 1.0f, 0.0f, 0.0f, 1.0f },
 		{ 0.0f, 1.0f, 0.0f, 1.0f },
+		{ 1.0f, 1.0f, 0.0f, 1.0f },
 		{ 0.0f, 0.0f, 1.0f, 1.0f },
-		{ 1.0f, 0.0f, 0.0f, 1.0f },
+		{ 1.0f, 0.0f, 1.0f, 1.0f },
+		{ 1.0f, 1.0f, 1.0f, 1.0f }
+	};
+	GLuint indices[] = {
+		0, 1, 3,
+		1, 2, 3, // back
+		4, 7, 2,
+		3, 4, 2, // right
+		6, 7, 4,
+		5, 6, 4, // front
+		6, 1, 0,
+		5, 6, 0, // left
+		0, 3, 4,
+		5, 0, 4, // bottom
+		1, 2, 7,
+		6, 1, 7, // top
 	};
 
 	if (m_program == 0) {
@@ -173,10 +198,15 @@ int CShader::Map(void)
 
 	glGenVertexArrays(1, &m_VAO);
 	glGenBuffers(1, &m_VBO);
+	glGenBuffers(1, &m_EBO);
 
 	glBindVertexArray(m_VAO);
+
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	cout << sizeof(vertices) / 2 << endl;
 

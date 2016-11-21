@@ -4,6 +4,7 @@ class CShader {
 private:
 	GLuint m_VAO;
 	GLuint m_VBO;
+	GLuint m_EBO;
 	GLuint m_program;
 	GLint m_mvp;
 	GLboolean m_mvp_updated;

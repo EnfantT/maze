@@ -25,8 +25,7 @@ int main(int argc, char *argv[])
 	if (status < 0)
 		return status;
 
-//	glEnable(GL_DEPTH_TEST);
-//	glEnable(GL_CULL_FACE);
+
 
 	shader = CShader::GetInstance();
 	if (!shader) {

@@ -46,6 +46,18 @@ void CUI::keyCB(GLFWwindow *win, int key, int scancode, int action, int mods)
 		case GLFW_KEY_S: // Down
 			shader->Translate(0.0f, 0.0f, -0.5f);
 			break;
+		case GLFW_KEY_N:
+			shader->Scale(2.0f, 2.0f, 2.0f, 1.0f);
+			break;
+		case GLFW_KEY_M:
+			shader->Scale(0.5f, 0.5f, 0.5f, 1.0f);
+			break;
+		case GLFW_KEY_O:
+			shader->Rotate(0.0f, 1.0f, 0.0f, 0.1f);
+			break;
+		case GLFW_KEY_P:
+			shader->Rotate(1.0f, 0.0f, 0.0f, 0.1f);
+			break;
 		case GLFW_KEY_ESCAPE:
 			glfwSetWindowShouldClose(win, 1);
 			break;
@@ -89,8 +101,8 @@ int CUI::CreateContext(int w, int h, const char *title)
 		return -EFAULT;
 
 	if (w == 0 || h == 0) {
-		w = 800;
-		h = 600;
+		w = 1024;
+		h = 768;
 	}
 
 	if (!title)
@@ -110,7 +122,7 @@ int CUI::CreateContext(int w, int h, const char *title)
 	 */
 	gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 
-	glViewport(0, 0, 800, 600);
+	glViewport(0, 0, 1024, 768);
 	return 0;
 }
 
