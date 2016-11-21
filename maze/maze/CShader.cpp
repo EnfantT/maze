@@ -1,4 +1,5 @@
 #include <iostream>
+#include <errno.h>
 
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
@@ -6,12 +7,18 @@
 
 #include "CShader.h"
 
+#if defined(_WIN32)
+#define GLSL_VERSION "#version 130 core\n"
+#else
+#define GLSL_VERSION "#version 130\n"
+#endif
+
 using namespace std;
 
 CShader *CShader::m_pInstance = NULL;
 
 const GLchar * const CShader::m_vertCode =
-"#version 130 core\n"
+GLSL_VERSION
 "uniform mat4 mvp;\n" /* mvp: ModelViewProject */
 "in vec4 position;\n"
 "in vec4 color;\n"
@@ -23,7 +30,7 @@ const GLchar * const CShader::m_vertCode =
 "}\n";
 
 const GLchar * const CShader::m_fragCode =
-"#version 130 core\n"
+GLSL_VERSION
 "in vec4 vertexColor;\n"
 "void main()\n"
 "{\n"

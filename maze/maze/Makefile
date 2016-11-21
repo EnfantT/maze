@@ -1,4 +1,4 @@
 CFLAGS=-g
 CFLAGS+=-I.
-all: glad.c maze.cpp
-	@g++ ${CFLAGS} `pkg-config glfw3 --cflags --libs` -ldl glad.c maze.cpp -o maze
+all: glad.c maze.cpp CShader.cpp CUI.cpp Player.cpp State.cpp
+	@g++ ${CFLAGS} `pkg-config glfw3 --cflags --libs` -ldl glad.c maze.cpp CShader.cpp CUI.cpp Player.cpp State.cpp -o maze
