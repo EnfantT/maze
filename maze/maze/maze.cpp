@@ -21,6 +21,43 @@ CMaze::~CMaze()
 {
 }
 
+class CShader {
+private:
+	GLuint m_vert;
+	GLuint m_frag;
+	GLuint m_program;
+	GLint m_mvp;
+	GLboolean m_mvp_updated;
+	mat4x4 m_mvp_matrix;
+
+	static const char * const m_vertCode;
+	static const char * const m_fragCode;
+	static CShader *m_pInstance;
+
+	int LoadNCompile(GLenum type, const char *code);
+
+	CShader(void);
+	virtual ~CShader(void);
+
+public:
+	static CShader *GetInstance(void);
+	void Destroy(void);
+
+	int Load(void);
+	int Map(void);
+	int Unload(void);
+	int ApplyMVP(void);
+
+	// Model
+	int Translate(float x, float y, float z);
+	int Scale(float x, float y, float z, float scale);
+	int Rotate(float x, float y, float z, float angle);
+
+	// View (Rotate, Translate)
+
+	// Project (frustrum)
+};
+
 // User Interface : Windows & input event handlers
 class CUI {
 private:
@@ -51,8 +88,31 @@ void CUI::ptrCB(GLFWwindow *win, double x, double y)
 
 void CUI::keyCB(GLFWwindow *win, int key, int scancode, int action, int mods)
 {
-	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-		glfwSetWindowShouldClose(win, 1);
+	CShader *shader;
+
+	shader = CShader::GetInstance();
+
+	if (action == GLFW_PRESS) {
+		switch (key) {
+		case GLFW_KEY_W: // Up
+			shader->Scale(0.0f, 0.0f, 0.1f, 2.0f);
+			break;
+		case GLFW_KEY_A: // Left
+			shader->Scale(0.0f, -0.1f, 0.0f, 1.0f);
+			break;
+		case GLFW_KEY_D: // Right
+			shader->Scale(0.0f, 0.1f, 0.0f, 0.5f);
+			break;
+		case GLFW_KEY_S: // Down
+			shader->Scale(0.0f, 0.0f, -0.1f, 1.0f);
+			break;
+		case GLFW_KEY_ESCAPE:
+			glfwSetWindowShouldClose(win, 1);
+			break;
+		default:
+			break;
+		}
+	}
 }
 
 CUI::CUI(void)
@@ -135,6 +195,8 @@ int CUI::Run(void)
 		return -EFAULT;
 
 	while (glfwWindowShouldClose(m_win) == 0) {
+		CShader::GetInstance()->ApplyMVP();
+
 		glClear(GL_COLOR_BUFFER_BIT);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 
@@ -143,34 +205,17 @@ int CUI::Run(void)
 	}
 }
 
-class CShader {
-private:
-	GLuint m_vert;
-	GLuint m_frag;
-	GLuint m_program;
-
-	static const char * const m_vertCode;
-	static const char * const m_fragCode;
-
-	int LoadNCompile(GLenum type, const char *code);
-
-public:
-	CShader(void);
-	virtual ~CShader(void);
-
-	int Load(void);
-	int Map(void);
-	int Unload(void);
-};
+CShader *CShader::m_pInstance = NULL;
 
 const char * const CShader::m_vertCode =
 	"#version 130\n"
+	"uniform mat4 mvp;\n" /* mvp: ModelViewProject */
 	"in vec4 position;\n"
 	"in vec4 color;\n"
 	"out vec4 vertexColor;\n"
 	"void main()\n"
 	"{\n"
-	"   gl_Position = position;\n"
+	"   gl_Position = position * mvp;\n"
 	"   vertexColor = color;\n"
 	"}\n";
 
@@ -184,10 +229,30 @@ const char * const CShader::m_fragCode =
 
 CShader::CShader()
 {
+	mat4x4_identity(m_mvp_matrix);
+	m_mvp_updated = true;
 }
 
 CShader::~CShader()
 {
+}
+
+void CShader::Destroy(void)
+{
+	delete this;
+}
+
+CShader *CShader::GetInstance(void)
+{
+	if (m_pInstance == NULL) {
+		try {
+			m_pInstance = new CShader();
+		} catch (...) {
+			return NULL;
+		}
+	}
+
+	return m_pInstance;
 }
 
 int CShader::LoadNCompile(GLenum type, const char *code)
@@ -232,6 +297,16 @@ int CShader::Load(void)
 	return 0;
 }
 
+int CShader::ApplyMVP(void)
+{
+	if (m_mvp_updated == false) // Nothing changed
+		return 0;
+
+	glUniformMatrix4fv(m_mvp, 1, GL_FALSE, (const GLfloat *)m_mvp_matrix);
+	m_mvp_updated = false;
+	return 0;
+}
+
 int CShader::Map(void)
 {
 	GLint color;
@@ -240,15 +315,29 @@ int CShader::Map(void)
 
 	struct vertex {
 		float x, y, z, w;
-	} vertices[6] = {
+	} vertices[] = {
 		// Vertex
-		{ 0.5f, 0.0f, 0.5f, 1.0f },
-		{ -0.5f, 0.0f, -0.5f, 1.0f },
-		{ 1.0f, 1.0f, 1.0f, 1.0f },
+		{ -0.5f, -0.5f, -0.5f, 1.0f },
+		{ -0.5f, 0.5f, -0.5f, 1.0f },
+		{ 0.5f, 0.5f, -0.5f, 1.0f },
+		/*
+		{ 0.5f, -0.5f, -0.5f, 1.0f },
+		{ 0.5f, -0.5f, 0.5f, 1.0f },
+		{ 0.5f, 0.5f, 0.5f, 1.0f },
+		{ -0.5f, 0.5f, 0.5f, 1.0f },
+		{ -0.5f, -0.5f, 0.5f, 1.0f },
+		*/
 		// Color
 		{ 1.0f, 0.0f, 0.0f, 1.0f },
 		{ 0.0f, 1.0f, 0.0f, 1.0f },
 		{ 0.0f, 0.0f, 1.0f, 1.0f },
+		/*
+		{ 1.0f, 1.0f, 1.0f, 1.0f },
+		{ 1.0f, 1.0f, 1.0f, 1.0f },
+		{ 1.0f, 1.0f, 1.0f, 1.0f },
+		{ 1.0f, 1.0f, 1.0f, 1.0f },
+		{ 1.0f, 1.0f, 1.0f, 1.0f },
+		*/
 	};
 
 	glGenBuffers(1, &vBuffer);
@@ -262,7 +351,7 @@ int CShader::Map(void)
 	if (position >= 0) {
 		glEnableVertexAttribArray(position);
 		glVertexAttribPointer(position, 4, GL_FLOAT, GL_FALSE,
-						sizeof(float) * 4,
+						sizeof(float) * 12,
 						(void *)0);
 	}
 
@@ -276,9 +365,16 @@ int CShader::Map(void)
 	if (color >= 0) {
 		glEnableVertexAttribArray(color);
 		glVertexAttribPointer(color, 4, GL_FLOAT, GL_FALSE,
-						sizeof(float) * 4,
+						sizeof(float) * 12,
 						(void *)(sizeof(float) * 12));
 	}
+
+	m_mvp = glGetUniformLocation(m_program, "mvp");
+	cout << "mvp index: " << m_mvp << endl;
+	if (m_mvp >= 0)
+		glEnableVertexAttribArray(m_mvp);
+	
+	ApplyMVP();
 
 	glUseProgram(m_program);
 	return 0;
@@ -289,10 +385,40 @@ int CShader::Unload(void)
 	return 0;
 }
 
+int CShader::Translate(float x, float y, float z)
+{
+	mat4x4 t;
+	mat4x4_translate(t, x, y, z);
+	mat4x4_mul(m_mvp_matrix, m_mvp_matrix, t);
+	m_mvp_updated = true;
+	return 0;
+}
+
+int CShader::Scale(float x, float y, float z, float scale)
+{
+	mat4x4 a;
+
+	a[0][0] = x;
+	a[1][1] = y;
+	a[2][2] = z;
+	a[3][3] = 1.0f;
+
+	mat4x4_scale(m_mvp_matrix, a, scale);
+	m_mvp_updated = true;
+	return 0;
+}
+
+int CShader::Rotate(float x, float y, float z, float angle)
+{
+	mat4x4_rotate(m_mvp_matrix, m_mvp_matrix, x, y, z, angle);
+	m_mvp_updated = true;
+	return 0;
+}
+
 int main(int argc, char *argv[])
 {
+	CShader *shader;
 	CUI ui;
-	CShader shader;
 	int status;
 
 	srand(time(0));
@@ -304,13 +430,21 @@ int main(int argc, char *argv[])
 //	glEnable(GL_DEPTH_TEST);
 //	glEnable(GL_CULL_FACE);
 
-	shader.Load();
+	shader = CShader::GetInstance();
+	if (!shader) {
+		ui.DestroyContext();
+		return -EFAULT;
+	}
 
-	shader.Map();
+	shader->Load();
+
+	shader->Map();
 
 	ui.Run();
 
-	shader.Unload();
+	shader->Unload();
+
+	shader->Destroy();
 
 	status = ui.DestroyContext();
 
