@@ -40,28 +40,20 @@ GLSL_VERSION
 CShader::CShader()
 	: m_program(0)
 {
-	vec3 eye;
-	vec3 center;
-	vec3 up;
 	mat4x4 perspective;
 	mat4x4 camera;
 
-	//mat4x4_identity(m_mvp_matrix);
-
-	eye[0] = 0.0f;
-	eye[1] = 30.0f;
-	eye[2] = 300.0f;
-
-	center[0] = 0.0f;
-	center[1] = 0.0f;
-	center[2] = 0.0f;
-
-	up[0] = 0.0;
-	up[1] = 1.0f;
-	up[2] = 0.0f;
-
+	/**
+	 * [nicesj]
+	 * We have to handle these matrices.
+	 * Camera & Perspective.
+	vec3 eye = { 0.0f, 30.0f, 300.0f };
+	vec3 center = { 0.0f, 0.0f, 0.0f };
+	vec3 up = { 0.0f, 1.0f, 0.0f };
 	mat4x4_look_at(camera, eye, center, up);
 	mat4x4_perspective(perspective, 3.141592f/4.0f, 1024/768, 1.0f, 1000.0f);
+	 */
+
 	mat4x4_identity(camera);
 	mat4x4_identity(perspective);
 
