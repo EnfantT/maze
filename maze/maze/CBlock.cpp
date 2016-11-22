@@ -167,20 +167,18 @@ int CBlock::Transform(float x, float y, float z)
 	if (m_loaded)
 		cerr << "Object is already loaded." << endl;
 
-	mat4x4 m;
 	int i;
-
-	/**
-	 * Create translation matrix
-	 */
-	mat4x4_translate(m, x, y, z);
 
 	/**
 	 * Apply it to the all vertices.
 	 */
-	for (i = 0; i < 8; i++)
-		mat4x4_mul_vec4(m_vertices[i], m, m_vertices[i]);
+	for (i = 0; i < 8; i++) {
+		m_vertices[i][0] += x;
+		m_vertices[i][1] += y;
+		m_vertices[i][2] += z;
+	}
 
+	m_geometry_updated = true;
 	return 0;
 }
 
@@ -198,6 +196,7 @@ int CBlock::Rotate(float x, float y, float z, float angle)
 	for (i = 0; i < 8; i++)
 		mat4x4_mul_vec4(m_vertices[i], m, m_vertices[i]);
 
+	m_geometry_updated = true;
 	return 0;
 }
 
@@ -218,6 +217,7 @@ int CBlock::Rotate(bool x, bool y, bool z, float angle)
 	for (i = 0; i < 8; i++)
 		mat4x4_mul_vec4(m_vertices[i], m, m_vertices[i]);
 
+	m_geometry_updated = true;
 	return 0;
 }
 
@@ -239,6 +239,7 @@ int CBlock::Scale(float x, float y, float z)
 			m_vertices[i][2] *= z;
 	}
 
+	m_geometry_updated = true;
 	return 0;
 }
 
