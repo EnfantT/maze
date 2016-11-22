@@ -15,9 +15,17 @@ private:
 	GLuint m_VBO[MAX]; // Buffer Object
 	GLuint m_EBO; // Element Object
 
-	static const vec4 vertices[];
-	static const vec4 colors[];
-	static const GLuint indices[];
+	vec4 m_vertices[8];
+	vec4 m_colors[8];
+	GLuint m_indices[16];
+
+	bool m_geometry_updated;
+	bool m_color_updated;
+
+	bool m_loaded;
+
+	int UpdateGeometry(void);
+	int UpdateColor(void);
 
 public:
 	CBlock(void);
@@ -25,6 +33,12 @@ public:
 
 	int Load(void);
 	int Render(void);
+
+	int Transform(float x, float y, float z);
+	int Rotate(float x, float y, float z, float angle);
+	int Rotate(bool x, bool y, bool z, float angle);
+
+	int Scale(float x, float y, float z);
 };
 
 #endif
