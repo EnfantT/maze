@@ -44,20 +44,45 @@ CBlock::CBlock(void)
 {
 	int i;
 
-	m_iCount = 5;
+	int y;
+	int x;
+
+	char map[][7] = {
+		{ 1, 1, 1, 1, 1, 1, 1, },
+		{ 0, 0, 0, 0, 0, 0, 1, },
+		{ 1, 0, 1, 0, 1, 0, 1, },
+		{ 1, 1, 1, 0, 0, 0, 1, },
+		{ 1, 0, 1, 1, 1, 0, 1, },
+		{ 1, 0, 0, 0, 0, 0, 1, },
+		{ 1, 1, 0, 1, 1, 1, 1, },
+	};
+
+	m_iCount = 0;
+	for (y = 0; y < 7; y++)
+		for (x = 0; x < 7; x++)
+			m_iCount += (map[y][x] == 1);
 
 	m_offset = (vec4 *)malloc(sizeof(*m_offset) * m_iCount);
-	m_offset[0][0] = 0.25f;
-	m_offset[0][1] = 0.0f;
-	m_offset[0][2] = 0.0f;
-	m_offset[0][3] = 1.0f;
-
-	for (i = 1; i < m_iCount; i++) {
-		m_offset[i][0] = m_offset[i - 1][0] + 0.25f;
-		m_offset[i][1] = m_offset[i - 1][1] + 0.25f;
-		m_offset[i][2] = m_offset[i - 1][2] + 0.25f;
-		m_offset[i][3] = m_offset[i - 1][3];
+	if (m_offset == NULL) {
+		cerr << "Failed to allocate heap for map" << endl;
+		return;
 	}
+
+	i = 0;
+	for (y = 0; y < 7; y++) {
+		for (x = 0; x < 7; x++) {
+			if (map[y][x] == 0)
+				continue;
+
+			m_offset[i][0] = x * 0.25f;
+			m_offset[i][1] = y * 0.25f;
+			m_offset[i][2] = 0;
+			m_offset[i][3] = 1.0f;
+			i++;
+		}
+	}
+
+	cout << m_iCount << " instances are created " << i << endl;
 }
 
 CBlock::~CBlock(void)
