@@ -40,11 +40,37 @@ GLSL_VERSION
 CShader::CShader()
 	: m_program(0)
 {
-	mat4x4_identity(m_mvp_matrix);
+	vec3 eye;
+	vec3 center;
+	vec3 up;
+	mat4x4 perspective;
+	mat4x4 camera;
+
+	//mat4x4_identity(m_mvp_matrix);
+
+	eye[0] = 0.0f;
+	eye[1] = 30.0f;
+	eye[2] = 300.0f;
+
+	center[0] = 0.0f;
+	center[1] = 0.0f;
+	center[2] = 0.0f;
+
+	up[0] = 0.0;
+	up[1] = 1.0f;
+	up[2] = 0.0f;
+
+	mat4x4_look_at(camera, eye, center, up);
+	mat4x4_perspective(perspective, 3.141592f/4.0f, 1024/768, 1.0f, 1000.0f);
+	mat4x4_identity(camera);
+	mat4x4_identity(perspective);
+
+	mat4x4_mul(m_mvp_matrix, camera, perspective);
 	m_mvp_updated = GL_TRUE;
 
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
+	glShadeModel(GL_SMOOTH);
 }
 
 CShader::~CShader()
@@ -153,7 +179,8 @@ int CShader::ApplyMVP(void)
 
 	glBindVertexArray(m_VAO);
 	//glDrawArrays(GL_TRIANGLE_FAN, 0, 9);
-	glDrawElements(GL_TRIANGLE_FAN, 18, GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLE_STRIP, 12, GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_INT, (void *)(sizeof(GLuint) * 12));
 	glBindVertexArray(0);
 	return 0;
 }
@@ -167,35 +194,29 @@ int CShader::Map(void)
 		float x, y, z, w;
 	} vertices[] = {
 		// Vertex
-		{ -1.0f, -1.0f, -1.0f, 1.0f },
-		{ -1.0f, 1.0f, -1.0f, 1.0f },
-		{ 1.0f, 1.0f, -1.0f, 1.0f },
-		{ 1.0f, -1.0f, -1.0f, 1.0f },
-		{ 1.0f, -1.0f, 1.0f, 1.0f },
-		{ -1.0f, -1.0f, 1.0f, 1.0f },
-		{ -1.0f, 1.0f, 1.0f, 1.0f },
-		{ 1.0f, 1.0f, 1.0f, 1.0f },
+		// Front
+		{ 0.5f, 0.5f, 0.5f, 1.0f },
+		{ -0.5f, 0.5f, 0.5f, 1.0f },
+		{ -0.5f, -0.5f, 0.5f, 1.0f },
+		{ 0.5f, -0.5f, 0.5f, 1.0f },
+		{ 0.5f, -0.5f, -0.5f, 1.0f },
+		{ 0.5f, 0.5f, -0.5f, 1.0f },
+		{ -0.5f, 0.5f, -0.5f, 1.0f },
+		{ -0.5f, -0.5f, -0.5f, 1.0f },
+
 		// color
 		{ 1.0f, 0.0f, 0.0f, 1.0f },
-		{ 0.0f, 1.0f, 0.0f, 1.0f },
-		{ 1.0f, 1.0f, 0.0f, 1.0f },
-		{ 0.0f, 0.0f, 1.0f, 1.0f },
-		{ 1.0f, 0.0f, 1.0f, 1.0f },
-		{ 1.0f, 1.0f, 1.0f, 1.0f }
+		{ 1.0f, 0.0f, 0.0f, 1.0f },
+		{ 1.0f, 0.0f, 0.0f, 1.0f },
+		{ 1.0f, 0.0f, 0.0f, 1.0f },
+		{ 1.0f, 1.0f, 1.0f, 1.0f },
+		{ 1.0f, 1.0f, 1.0f, 1.0f },
+		{ 1.0f, 1.0f, 1.0f, 1.0f },
+		{ 1.0f, 1.0f, 1.0f, 1.0f },
 	};
 	GLuint indices[] = {
-		0, 1, 3,
-		1, 2, 3, // back
-		4, 7, 2,
-		3, 4, 2, // right
-		6, 7, 4,
-		5, 6, 4, // front
-		6, 1, 0,
-		5, 6, 0, // left
-		0, 3, 4,
-		5, 0, 4, // bottom
-		1, 2, 7,
-		6, 1, 7, // top
+		0, 1, 2, 6, 7, 5, 4, 0, 3, 2, 4, 7,
+		0, 5, 1, 6,
 	};
 
 	if (m_program == 0) {
@@ -292,7 +313,14 @@ int CShader::Scale(float x, float y, float z, float scale)
 
 int CShader::Rotate(float x, float y, float z, float angle)
 {
-	mat4x4_rotate(m_mvp_matrix, m_mvp_matrix, x, y, z, angle);
+	if (x >= 1.0f)
+		mat4x4_rotate_X(m_mvp_matrix, m_mvp_matrix, angle);
+
+	if (y >= 1.0f)
+		mat4x4_rotate_Y(m_mvp_matrix, m_mvp_matrix, angle);
+
+	if (z >= 1.0f)
+		mat4x4_rotate_Z(m_mvp_matrix, m_mvp_matrix, angle);
 
 	m_mvp_updated = GL_TRUE;
 	return 0;

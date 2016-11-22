@@ -25,8 +25,6 @@ int main(int argc, char *argv[])
 	if (status < 0)
 		return status;
 
-
-
 	shader = CShader::GetInstance();
 	if (!shader) {
 		ui.DestroyContext();

@@ -52,13 +52,23 @@ void CUI::keyCB(GLFWwindow *win, int key, int scancode, int action, int mods)
 			shader->Scale(0.5f, 0.5f, 0.5f, 1.0f);
 			break;
 		case GLFW_KEY_O:
-			shader->Rotate(0.0f, 1.0f, 0.0f, 0.1f);
+			shader->Rotate(0.0f, 1.0f, 0.0f, mods ? -0.1f : 0.1f);
 			break;
 		case GLFW_KEY_P:
-			shader->Rotate(1.0f, 0.0f, 0.0f, 0.1f);
+			shader->Rotate(1.0f, 0.0f, 0.0f, mods ? -0.1f : 0.1f);
 			break;
 		case GLFW_KEY_ESCAPE:
 			glfwSetWindowShouldClose(win, 1);
+			break;
+		case GLFW_KEY_0:
+			static GLenum flag = GL_FILL;
+			if (flag == GL_FILL)
+				flag = GL_LINE;
+			else
+				flag = GL_FILL;
+			// GL_FILL : Filling with colors.
+			// GL_LINE : Drawing lines only.
+			glPolygonMode(GL_FRONT_AND_BACK, flag);
 			break;
 		default:
 			break;
