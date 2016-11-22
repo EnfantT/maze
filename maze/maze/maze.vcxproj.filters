@@ -27,6 +27,12 @@
     <ClCompile Include="CUI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CBlock.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="linmath.h">
@@ -36,6 +42,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CUI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CBlock.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
