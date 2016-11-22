@@ -11,6 +11,7 @@
 #include "GLFW/glfw3.h"
 #include "linmath.h"
 #include "CShader.h"
+#include "CBlock.h"
 #include "CUI.h"
 
 using namespace std;
@@ -18,6 +19,7 @@ using namespace std;
 int main(int argc, char *argv[])
 {
 	CShader *shader;
+	CBlock block;
 	CUI ui;
 	int status;
 
@@ -35,9 +37,15 @@ int main(int argc, char *argv[])
 
 	shader->Load();
 
+	block.Load();
+
 	shader->Map();
 
+	ui.AddObject(&block);
+
 	ui.Run();
+
+	ui.DelObject(&block);
 
 	shader->Unload();
 

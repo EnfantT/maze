@@ -1,5 +1,8 @@
 #pragma once
 
+#if !defined(_CSHADER_H)
+#define _CSHADER_H
+
 class CShader {
 private:
 	GLuint m_VAO;
@@ -28,6 +31,8 @@ public:
 	int Unload(void);
 	int ApplyMVP(void);
 
+	GLuint GetProgram(void);
+
 	// Model
 	int Translate(float x, float y, float z);
 	int Scale(float x, float y, float z, float scale);
@@ -37,3 +42,6 @@ public:
 
 	// Project (frustrum)
 };
+
+#endif
+/* End of a file */

@@ -169,96 +169,11 @@ int CShader::ApplyMVP(void)
 		m_mvp_updated = GL_FALSE;
 	}
 
-	glBindVertexArray(m_VAO);
-	glDrawElements(GL_TRIANGLE_STRIP, 12, GL_UNSIGNED_INT, 0);
-	glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_INT, (void *)(sizeof(GLuint) * 12));
-	glBindVertexArray(0);
 	return 0;
 }
 
 int CShader::Map(void)
 {
-	GLint color;
-	GLint position;
-
-	struct vertex {
-		float x, y, z, w;
-	} vertices[] = {
-		// Vertex
-		// Front
-		{ 0.5f, 0.5f, 0.5f, 1.0f },
-		{ -0.5f, 0.5f, 0.5f, 1.0f },
-		{ -0.5f, -0.5f, 0.5f, 1.0f },
-		{ 0.5f, -0.5f, 0.5f, 1.0f },
-		{ 0.5f, -0.5f, -0.5f, 1.0f },
-		{ 0.5f, 0.5f, -0.5f, 1.0f },
-		{ -0.5f, 0.5f, -0.5f, 1.0f },
-		{ -0.5f, -0.5f, -0.5f, 1.0f },
-
-		// color
-		{ 1.0f, 0.0f, 0.0f, 1.0f },
-		{ 1.0f, 0.0f, 0.0f, 1.0f },
-		{ 1.0f, 0.0f, 0.0f, 1.0f },
-		{ 1.0f, 0.0f, 0.0f, 1.0f },
-		{ 1.0f, 1.0f, 1.0f, 1.0f },
-		{ 1.0f, 1.0f, 1.0f, 1.0f },
-		{ 1.0f, 1.0f, 1.0f, 1.0f },
-		{ 1.0f, 1.0f, 1.0f, 1.0f },
-	};
-	GLuint indices[] = {
-		0, 1, 2, 6, 7, 5, 4, 0, 3, 2, 4, 7,
-		0, 5, 1, 6,
-	};
-
-	if (m_program == 0) {
-		cerr << "Program is not initialized" << endl;
-		return -EFAULT;
-	}
-
-	glGenVertexArrays(1, &m_VAO);
-	glGenBuffers(1, &m_VBO);
-	glGenBuffers(1, &m_EBO);
-
-	glBindVertexArray(m_VAO);
-
-	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-	cout << sizeof(vertices) / 2 << endl;
-
-	// [nicesj]
-	// glGetAttribLocation function returns -1 if the given variable
-	// has no reference in the shader.
-	// And if it is a reserved name, such has prefix "gl_", returns -1 too.
-	position = glGetAttribLocation(m_program, "position");
-	cout << "position index: " << position << endl;
-	if (position >= 0) {
-		glEnableVertexAttribArray(position);
-		// [nicesj]
-		// Because of "stride" value, I lost 3 more hours.
-		// I set it with wrong value (too big one), the triangle is disappeared.
-		glVertexAttribPointer(position, 4, GL_FLOAT, GL_FALSE,
-			sizeof(float) * 4,
-			(void *)0);
-	}
-
-	color = glGetAttribLocation(m_program, "color");
-	cout << "color index: " << color << endl;
-	if (color >= 0) {
-		glEnableVertexAttribArray(color);
-		glVertexAttribPointer(color, 4, GL_FLOAT, GL_FALSE,
-			sizeof(float) * 4,
-			(void *)(sizeof(vertices) / 2));
-	}
-
-	// After handling the VBO,
-	// We should unbound it for safety use.
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
-
 	m_mvp = glGetUniformLocation(m_program, "mvp");
 	cout << "mvp index: " << m_mvp << endl;
 	if (m_mvp >= 0)
@@ -315,6 +230,11 @@ int CShader::Rotate(float x, float y, float z, float angle)
 
 	m_mvp_updated = GL_TRUE;
 	return 0;
+}
+
+GLuint CShader::GetProgram(void)
+{
+	return m_program;
 }
 
 // End of a file

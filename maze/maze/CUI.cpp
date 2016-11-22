@@ -71,7 +71,7 @@ void CUI::keyCB(GLFWwindow *win, int key, int scancode, int action, int mods)
 			glPolygonMode(GL_FRONT_AND_BACK, flag);
 			break;
 		default:
-			cout << "error" << endl;
+			cout << "Key error" << endl;
 			break;
 		}
 	}
@@ -79,6 +79,7 @@ void CUI::keyCB(GLFWwindow *win, int key, int scancode, int action, int mods)
 
 CUI::CUI(void)
 	: m_win(NULL)
+	, m_objectList(NULL)
 {
 	if (m_initialized == 0) {
 		int status;
@@ -150,6 +151,8 @@ int CUI::DestroyContext(void)
 
 int CUI::Run(void)
 {
+	CObject *obj;
+
 	if (m_initialized == 0)
 		return -EFAULT;
 
@@ -157,8 +160,13 @@ int CUI::Run(void)
 		return -EFAULT;
 
 	while (glfwWindowShouldClose(m_win) == 0) {
-
 		CShader::GetInstance()->ApplyMVP();
+
+		obj = m_objectList;
+		while (obj) {
+			obj->Render();
+			obj = obj->Next();
+		}
 
 		glfwPollEvents();
 		glfwSwapBuffers(m_win);
@@ -166,3 +174,24 @@ int CUI::Run(void)
 
 	return 0;
 }
+
+int CUI::AddObject(CObject *obj)
+{
+	if (m_objectList)
+		m_objectList->AddBack(obj);
+	else
+		m_objectList = obj;
+
+	return 0;
+}
+
+int CUI::DelObject(CObject *obj)
+{
+	if (m_objectList == obj)
+		m_objectList = obj->Next();
+
+	obj->Remove();
+	return 0;
+}
+
+/* End of a file */
