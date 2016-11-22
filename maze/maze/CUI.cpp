@@ -24,6 +24,7 @@ void CUI::ptrCB(GLFWwindow *win, double x, double y)
 void CUI::keyCB(GLFWwindow *win, int key, int scancode, int action, int mods)
 {
 	CShader *shader;
+	static GLenum flag = GL_FILL;
 
 	shader = CShader::GetInstance();
 	if (!shader) {
@@ -61,7 +62,6 @@ void CUI::keyCB(GLFWwindow *win, int key, int scancode, int action, int mods)
 			glfwSetWindowShouldClose(win, 1);
 			break;
 		case GLFW_KEY_0:
-			static GLenum flag = GL_FILL;
 			if (flag == GL_FILL)
 				flag = GL_LINE;
 			else
@@ -71,6 +71,7 @@ void CUI::keyCB(GLFWwindow *win, int key, int scancode, int action, int mods)
 			glPolygonMode(GL_FRONT_AND_BACK, flag);
 			break;
 		default:
+			cout << "error" << endl;
 			break;
 		}
 	}

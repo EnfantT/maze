@@ -170,7 +170,6 @@ int CShader::ApplyMVP(void)
 	}
 
 	glBindVertexArray(m_VAO);
-	//glDrawArrays(GL_TRIANGLE_FAN, 0, 9);
 	glDrawElements(GL_TRIANGLE_STRIP, 12, GL_UNSIGNED_INT, 0);
 	glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_INT, (void *)(sizeof(GLuint) * 12));
 	glBindVertexArray(0);
