@@ -179,6 +179,7 @@ static void free_exts(void) {
     }
 }
 
+#if defined(_WIN32)
 static int has_ext(const char *ext) {
 #ifdef _GLAD_IS_SOME_NEW_VERSION
     if(max_loaded_major < 3) {
@@ -220,6 +221,8 @@ static int has_ext(const char *ext) {
 
     return 0;
 }
+#endif
+
 int GLAD_GL_VERSION_1_0;
 int GLAD_GL_VERSION_1_1;
 int GLAD_GL_VERSION_1_2;

@@ -1,4 +1,6 @@
+#if defined(_WIN32)
 #pragma comment(lib, "glfw3dll.lib")
+#endif
 
 #include <iostream>
 #include <stdlib.h>
