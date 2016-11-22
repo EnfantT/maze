@@ -11,14 +11,14 @@
 using namespace std;
 
 static const vec4 g_vertices[] = {
-	{  0.5f,  0.5f,  0.5f, 1.0f },
-	{ -0.5f,  0.5f,  0.5f, 1.0f },
-	{ -0.5f, -0.5f,  0.5f, 1.0f },
-	{  0.5f, -0.5f,  0.5f, 1.0f },
-	{  0.5f, -0.5f, -0.5f, 1.0f },
-	{  0.5f,  0.5f, -0.5f, 1.0f },
-	{ -0.5f,  0.5f, -0.5f, 1.0f },
-	{ -0.5f, -0.5f, -0.5f, 1.0f },
+	{  0.125f,  0.125f,  0.125f, 1.0f },
+	{ -0.125f,  0.125f,  0.125f, 1.0f },
+	{ -0.125f, -0.125f,  0.125f, 1.0f },
+	{  0.125f, -0.125f,  0.125f, 1.0f },
+	{  0.125f, -0.125f, -0.125f, 1.0f },
+	{  0.125f,  0.125f, -0.125f, 1.0f },
+	{ -0.125f,  0.125f, -0.125f, 1.0f },
+	{ -0.125f, -0.125f, -0.125f, 1.0f },
 };
 
 static const vec4 g_colors[] = {
@@ -105,6 +105,7 @@ int CBlock::UpdateColor(void)
 			sizeof(float) * 4,
 			(void *)0);
 	}
+
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	m_color_updated = false;
 
@@ -124,6 +125,7 @@ int CBlock::Load(void)
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(m_indices), m_indices, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	glBindVertexArray(0);
 
@@ -142,8 +144,10 @@ int CBlock::Render(void)
 	UpdateColor();
 
 	glBindVertexArray(m_VAO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
 	glDrawElements(GL_TRIANGLE_STRIP, 12, GL_UNSIGNED_INT, 0);
-	glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_INT, (void *)(sizeof(GLuint) * 12));
+//	glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_INT, (void *)(sizeof(GLuint) * 12));
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 	return 0;
 }

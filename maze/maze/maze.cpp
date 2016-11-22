@@ -19,7 +19,7 @@ using namespace std;
 int main(int argc, char *argv[])
 {
 	CShader *shader;
-	CBlock block, block2;
+	CBlock block, block2, block3, block4;
 	CUI ui;
 	int status;
 
@@ -37,7 +37,12 @@ int main(int argc, char *argv[])
 
 	shader->Load();
 
-	block2.Transform(0.5f, 0.0f, 0.0f);
+	block4.Transform(0.0f, 0.0f, -0.5f);
+	block3.Transform(0.0f, -0.5f, 0.0f);
+	block2.Transform(-0.5f, 0.0f, 0.0f);
+
+	block4.Load();
+	block3.Load();
 	block2.Load();
 	block.Load();
 
@@ -45,11 +50,15 @@ int main(int argc, char *argv[])
 
 	ui.AddObject(&block);
 	ui.AddObject(&block2);
+	ui.AddObject(&block3);
+	ui.AddObject(&block4);
 
 	ui.Run();
 
 	ui.DelObject(&block);
 	ui.DelObject(&block2);
+	ui.DelObject(&block3);
+	ui.DelObject(&block4);
 
 	shader->Unload();
 
