@@ -22,10 +22,11 @@ GLSL_VERSION
 "uniform mat4 mvp;\n" /* mvp: ModelViewProject */
 "in vec4 position;\n"
 "in vec4 color;\n"
+"in vec4 offset;\n"
 "out vec4 vertexColor;\n"
 "void main()\n"
 "{\n"
-"   gl_Position = position * mvp;\n"
+"   gl_Position = (position + offset) * mvp;\n"
 "   vertexColor = color;\n"
 "}\n";
 

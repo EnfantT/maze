@@ -14,10 +14,14 @@ private:
 	GLuint m_VAO; // Array Object
 	GLuint m_VBO[MAX]; // Buffer Object
 	GLuint m_EBO; // Element Object
+	GLuint m_iVBO; // Instanced VBO - offset
 
-	vec4 m_vertices[8];
-	vec4 m_colors[8];
-	GLuint m_indices[16];
+	static const vec4 m_vertices[8];
+	static const vec4 m_colors[8];
+	static const GLuint m_indices[16];
+
+	vec4 *m_offset;
+	int m_iCount;
 
 	bool m_geometry_updated;
 	bool m_color_updated;
@@ -26,6 +30,8 @@ private:
 
 	int UpdateGeometry(void);
 	int UpdateColor(void);
+	int UpdateOffset(void);
+
 
 public:
 	CBlock(void);
