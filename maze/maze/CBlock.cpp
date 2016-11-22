@@ -146,7 +146,7 @@ int CBlock::Render(void)
 	glBindVertexArray(m_VAO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
 	glDrawElements(GL_TRIANGLE_STRIP, 12, GL_UNSIGNED_INT, 0);
-//	glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_INT, (void *)(sizeof(GLuint) * 12));
+	glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_INT, (void *)(sizeof(GLuint) * 12));
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 	return 0;
