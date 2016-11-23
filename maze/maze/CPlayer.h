@@ -18,6 +18,8 @@ public:
 	void Destroy(void);
 	int Render(void);
 	int Load(void);
+
+	int Translate(vec4 offset);
 };
 
 #endif

@@ -83,4 +83,10 @@ int CPlayer::Load(void)
 	return 0;
 }
 
+int CPlayer::Translate(vec4 offset)
+{
+	m_playerOffset += offset;
+	return 0;
+}
+
 /* End of a file */
