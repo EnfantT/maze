@@ -12,13 +12,6 @@ private:
 	GLint m_mvp;
 	GLboolean m_mvpUpdated;
 	mat4 m_mvpMatrix;
-	mat4 m_viewMatrix;
-	mat4 m_modelMatrix;
-	mat4 m_perspectiveMatrix;
-
-	vec3 m_eye;
-	vec3 m_at;
-	vec3 m_up;
 
 	static const char * const m_vertCode;
 	static const char * const m_fragCode;

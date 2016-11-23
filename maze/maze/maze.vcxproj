@@ -111,8 +111,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CBlock.cpp" />
+    <ClCompile Include="CModel.cpp" />
     <ClCompile Include="CObject.cpp" />
+    <ClCompile Include="CPerspective.cpp" />
     <ClCompile Include="CUI.cpp" />
+    <ClCompile Include="CView.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="maze.cpp" />
     <ClCompile Include="CShader.cpp" />
@@ -120,9 +123,12 @@
   <ItemGroup>
     <ClInclude Include="CBlock.h" />
     <ClInclude Include="cgmath.h" />
+    <ClInclude Include="CModel.h" />
     <ClInclude Include="CObject.h" />
+    <ClInclude Include="CPerspective.h" />
     <ClInclude Include="CShader.h" />
     <ClInclude Include="CUI.h" />
+    <ClInclude Include="CView.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

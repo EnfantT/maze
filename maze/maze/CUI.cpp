@@ -5,6 +5,7 @@
 #include "GLFW/glfw3.h"
 
 #include "cgmath.h"
+#include "CView.h"
 #include "CUI.h"
 #include "CShader.h"
 
@@ -24,7 +25,10 @@ void CUI::ptrCB(GLFWwindow *win, double x, double y)
 void CUI::keyCB(GLFWwindow *win, int key, int scancode, int action, int mods)
 {
 	CShader *shader;
+	CView *view;
 	static GLenum flag = GL_FILL;
+	vec3 up;
+	vec3 move(0.0f, 0.0f, 0.0f);
 
 	shader = CShader::GetInstance();
 	if (!shader) {
@@ -32,19 +36,39 @@ void CUI::keyCB(GLFWwindow *win, int key, int scancode, int action, int mods)
 		return;
 	}
 
+	view = CView::GetInstance();
+	if (!view) {
+		cerr << "View object is not valid" << endl;
+		return;
+	}
+
+	up = CView::GetInstance()->Up();
+
 	if (action == GLFW_PRESS) {
 		switch (key) {
-		case GLFW_KEY_W: // Up
-			shader->Translate(0.0f, 0.0f, 0.1f);
+		case GLFW_KEY_W: // Up : Move eye to up side
+			move.x = 0.0f;
+			move.y = 0.5f;
+			move.z = 0.0f;
+			view->SetEye(view->Eye() + move);
 			break;
 		case GLFW_KEY_A: // Left
-			shader->Translate(0.0f, -0.1f, 0.0f);
+			move.x = -0.5f;
+			move.y = 0.0f;
+			move.z = 0.0f;
+			view->SetEye(view->Eye() + move);
 			break;
 		case GLFW_KEY_D: // Right
-			shader->Translate(0.0f, 0.1f, 0.0f);
+			move.x = 0.5f;
+			move.y = 0.0f;
+			move.z = 0.0f;
+			view->SetEye(view->Eye() + move);
 			break;
 		case GLFW_KEY_S: // Down
-			shader->Translate(0.0f, 0.0f, -0.1f);
+			move.x = 0.0f;
+			move.y = -0.5f;
+			move.z = 0.0f;
+			view->SetEye(view->Eye() + move);
 			break;
 		case GLFW_KEY_N:
 			shader->Scale(2.0f, 2.0f, 2.0f, 1.0f);

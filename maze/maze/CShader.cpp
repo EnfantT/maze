@@ -5,6 +5,10 @@
 #include "GLFW/glfw3.h"
 #include "cgmath.h"
 
+#include "CView.h"
+#include "CPerspective.h"
+#include "CModel.h"
+
 #include "CShader.h"
 
 #if defined(_WIN32)
@@ -40,22 +44,13 @@ GLSL_VERSION
 
 CShader::CShader()
 	: m_program(0)
-	, m_eye(0.0f, 0.25f, 20.0f)
-	, m_at(0.0f, 0.0f, 0.0f)
-	, m_up(0.0f, 1.0f, 0.0f)
 {
-	m_perspectiveMatrix.setPerspective(PI / 60.0f, 1024.0f / 768.9f, 0.1f, 100000.0f);
-	m_viewMatrix.setLookAt(m_eye, m_at, m_up);
-	m_modelMatrix.setIdentity();
-
-	m_mvpUpdated = GL_TRUE;
 
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_PRIMITIVE_RESTART);
 
 	glShadeModel(GL_SMOOTH);
-	
 	glPrimitiveRestartIndex(0xFFFFFFFF);
 }
 
@@ -157,14 +152,13 @@ int CShader::ApplyMVP(void)
 
 	glUseProgram(m_program);
 	
-	if (m_mvpUpdated == GL_TRUE) {
+	if (CView::GetInstance()->Updated() == true || CPerspective::GetInstance()->Updated() || CModel::GetInstance()->Updated()) {
 		cout << "Update MVP" << endl;
 		/**
 		* Order of multiplication is important.
 		*/
-		m_mvpMatrix = m_perspectiveMatrix * m_viewMatrix * m_modelMatrix;
+		m_mvpMatrix = CPerspective::GetInstance()->Matrix() * CView::GetInstance()->Matrix() * CModel::GetInstance()->Matrix();
 		glUniformMatrix4fv(m_mvp, 1, GL_FALSE, (const GLfloat *)m_mvpMatrix);
-		m_mvpUpdated = GL_FALSE;
 	}
 
 	return 0;
@@ -191,24 +185,16 @@ int CShader::Unload(void)
 
 int CShader::Translate(float x, float y, float z)
 {
-	m_eye += vec3(x, y, z);
-
-	m_viewMatrix.setLookAt(m_eye, m_at, m_up);
-	m_mvpUpdated = GL_TRUE;
 	return 0;
 }
 
 int CShader::Scale(float x, float y, float z, float factor)
 {
-	m_modelMatrix = m_modelMatrix * mat4::scale(vec3(x, y, z));
-	m_mvpUpdated = GL_TRUE;
 	return 0;
 }
 
 int CShader::Rotate(float x, float y, float z, float angle)
 {
-	m_modelMatrix = m_modelMatrix * mat4::rotate(vec3(x, y, z), angle);
-	m_mvpUpdated = GL_TRUE;
 	return 0;
 }
 
