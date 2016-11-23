@@ -114,7 +114,9 @@
     <ClCompile Include="CModel.cpp" />
     <ClCompile Include="CObject.cpp" />
     <ClCompile Include="CPerspective.cpp" />
+    <ClCompile Include="CPlayer.cpp" />
     <ClCompile Include="CUI.cpp" />
+    <ClCompile Include="CVertices.cpp" />
     <ClCompile Include="CView.cpp" />
     <ClCompile Include="glad.c" />
     <ClCompile Include="maze.cpp" />
@@ -126,8 +128,10 @@
     <ClInclude Include="CModel.h" />
     <ClInclude Include="CObject.h" />
     <ClInclude Include="CPerspective.h" />
+    <ClInclude Include="CPlayer.h" />
     <ClInclude Include="CShader.h" />
     <ClInclude Include="CUI.h" />
+    <ClInclude Include="CVertices.h" />
     <ClInclude Include="CView.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

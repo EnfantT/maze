@@ -5,9 +5,6 @@
 
 class CShader {
 private:
-	GLuint m_VAO;
-	GLuint m_VBO;
-	GLuint m_EBO;
 	GLuint m_program;
 	GLint m_mvp;
 	GLboolean m_mvpUpdated;
@@ -32,15 +29,7 @@ public:
 	int ApplyMVP(void);
 
 	GLuint GetProgram(void);
-
-	// Model
-	int Translate(float x, float y, float z);
-	int Scale(float x, float y, float z, float scale);
-	int Rotate(float x, float y, float z, float angle);
-
-	// View (Rotate, Translate)
-
-	// Project (frustrum)
+	void UseProgram(void);
 };
 
 #endif

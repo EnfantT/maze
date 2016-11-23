@@ -8,6 +8,7 @@
 #include "CView.h"
 #include "CUI.h"
 #include "CShader.h"
+#include "CVertices.h"
 
 using namespace std;
 
@@ -71,16 +72,12 @@ void CUI::keyCB(GLFWwindow *win, int key, int scancode, int action, int mods)
 			view->SetEye(view->Eye() + move);
 			break;
 		case GLFW_KEY_N:
-			shader->Scale(2.0f, 2.0f, 2.0f, 1.0f);
 			break;
 		case GLFW_KEY_M:
-			shader->Scale(0.5f, 0.5f, 0.5f, 1.0f);
 			break;
 		case GLFW_KEY_O:
-			shader->Rotate(0.0f, 1.0f, 0.0f, mods ? -0.1f : 0.1f);
 			break;
 		case GLFW_KEY_P:
-			shader->Rotate(1.0f, 0.0f, 0.0f, mods ? -0.1f : 0.1f);
 			break;
 		case GLFW_KEY_ESCAPE:
 			glfwSetWindowShouldClose(win, 1);
@@ -184,13 +181,19 @@ int CUI::Run(void)
 		return -EFAULT;
 
 	while (glfwWindowShouldClose(m_win) == 0) {
+		CShader::GetInstance()->UseProgram();
 		CShader::GetInstance()->ApplyMVP();
 
 		obj = m_objectList;
+		CVertices::GetInstance()->BindVAO();
+		CVertices::GetInstance()->BindEBO();
 		while (obj) {
 			obj->Render();
 			obj = obj->Next();
 		}
+		CVertices::GetInstance()->UnbindEBO();
+		CVertices::GetInstance()->UnbindVAO();
+
 
 		glfwPollEvents();
 		glfwSwapBuffers(m_win);

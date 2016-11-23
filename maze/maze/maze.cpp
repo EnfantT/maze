@@ -11,7 +11,12 @@
 #include "GLFW/glfw3.h"
 #include "cgmath.h"
 #include "CShader.h"
+
+#include "CVertices.h"
+#include "CObject.h"
 #include "CBlock.h"
+#include "CPlayer.h"
+
 #include "CUI.h"
 
 using namespace std;
@@ -19,7 +24,9 @@ using namespace std;
 int main(int argc, char *argv[])
 {
 	CShader *shader;
-	CBlock block;
+	CVertices *vertices;
+	CPlayer *player;
+	CBlock *block;
 	CUI ui;
 	int status;
 
@@ -35,20 +42,50 @@ int main(int argc, char *argv[])
 		return -EFAULT;
 	}
 
-	shader->Load();
+	vertices = CVertices::GetInstance();
+	if (!vertices) {
+		shader->Destroy();
+		ui.DestroyContext();
+		return -EFAULT;
+	}
 
-	block.Load();
+	player = CPlayer::GetInstance();
+	if (!player) {
+		vertices->Destroy();
+		shader->Destroy();
+		ui.DestroyContext();
+		return -EFAULT;
+	}
+
+	block = CBlock::GetInstance();
+	if (!block) {
+		player->Destroy();
+		vertices->Destroy();
+		shader->Destroy();
+		ui.DestroyContext();
+		return -EFAULT;
+	}
+
+	shader->Load();
+	vertices->Load();
+	block->Load();
+	player->Load();
 
 	shader->Map();
 
-	ui.AddObject(&block);
+	ui.AddObject(block);
+	ui.AddObject(player);
 
 	ui.Run();
 
-	ui.DelObject(&block);
+	ui.DelObject(player);
+	ui.DelObject(block);
+
+	player->Destroy();
+	block->Destroy();
+	vertices->Destroy();
 
 	shader->Unload();
-
 	shader->Destroy();
 
 	status = ui.DestroyContext();

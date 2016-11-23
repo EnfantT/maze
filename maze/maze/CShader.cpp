@@ -24,13 +24,19 @@ CShader *CShader::m_pInstance = NULL;
 const GLchar * const CShader::m_vertCode =
 GLSL_VERSION
 "uniform mat4 mvp;\n" /* mvp: ModelViewProject */
+"uniform vec4 playerOffset;\n"
+"uniform bool isPlayer;\n"
 "in vec4 position;\n"
 "in vec4 color;\n"
 "in vec4 offset;\n"
 "out vec4 vertexColor;\n"
 "void main()\n"
 "{\n"
-"   gl_Position = mvp * (position + offset);\n" // Tradition of the opengl. Keeping the matrix on the left and the vertices on the right.
+"   if (isPlayer) {\n"
+"      gl_Position = mvp * (position + playerOffset);\n"
+"   } else {\n"
+"      gl_Position = mvp * (position + offset);\n" // Tradition of the opengl. Keeping the matrix on the left and the vertices on the right.
+"   }\n"
 "   vertexColor = color;\n"
 "}\n";
 
@@ -45,21 +51,15 @@ GLSL_VERSION
 CShader::CShader()
 	: m_program(0)
 {
-
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_PRIMITIVE_RESTART);
 
 	glShadeModel(GL_SMOOTH);
-	glPrimitiveRestartIndex(0xFFFFFFFF);
 }
 
 CShader::~CShader()
 {
 	// m_program should be destroyed via Unload.
-	glDeleteBuffers(1, &m_VAO);
-	glDeleteBuffers(1, &m_VBO);
-	glDeleteBuffers(1, &m_EBO);
 }
 
 void CShader::Destroy(void)
@@ -142,6 +142,11 @@ int CShader::Load(void)
 	return 0;
 }
 
+void CShader::UseProgram(void)
+{
+	glUseProgram(m_program);
+}
+
 int CShader::ApplyMVP(void)
 {
 	if (m_program == 0)
@@ -149,8 +154,6 @@ int CShader::ApplyMVP(void)
 
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	glUseProgram(m_program);
 	
 	if (CView::GetInstance()->Updated() == true || CPerspective::GetInstance()->Updated() || CModel::GetInstance()->Updated()) {
 		cout << "Update MVP" << endl;
@@ -167,9 +170,12 @@ int CShader::ApplyMVP(void)
 int CShader::Map(void)
 {
 	m_mvp = glGetUniformLocation(m_program, "mvp");
-	cout << "mvp index: " << m_mvp << endl;
-	if (m_mvp >= 0)
+	if (glGetError() != GL_NO_ERROR)
+		cerr << "Failed to find a mvp" << endl;
+	else
 		glEnableVertexAttribArray(m_mvp);
+
+	cout << "mvp index: " << m_mvp << endl;
 
 	return 0;
 }
@@ -180,21 +186,6 @@ int CShader::Unload(void)
 		glDeleteProgram(m_program);
 
 	m_program = 0;
-	return 0;
-}
-
-int CShader::Translate(float x, float y, float z)
-{
-	return 0;
-}
-
-int CShader::Scale(float x, float y, float z, float factor)
-{
-	return 0;
-}
-
-int CShader::Rotate(float x, float y, float z, float angle)
-{
 	return 0;
 }
 

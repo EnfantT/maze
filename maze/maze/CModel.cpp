@@ -45,9 +45,9 @@ bool CModel::Updated(void)
 
 mat4 CModel::Matrix(void)
 {
-	if (m_updated) {
+	if (m_updated)
 		m_updated = false;
-	}
+
 	return m_model;
 }
 
