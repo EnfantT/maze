@@ -18,7 +18,7 @@ private:
 
 	static const vec4 m_vertices[8];
 	static const vec4 m_colors[8];
-	static const GLuint m_indices[16];
+	static const GLuint m_indices[17];
 
 	vec4 *m_offset;
 	int m_iCount;

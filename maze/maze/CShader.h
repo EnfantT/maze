@@ -11,12 +11,11 @@ private:
 	GLuint m_program;
 	GLint m_mvp;
 	GLboolean m_mvpUpdated;
-	mat4x4 m_mvpMatrix;
-	mat4x4 m_viewMatrix;
-	mat4x4 m_modelMatrix;
-	mat4x4 m_perspectiveMatrix;
+	mat4 m_mvpMatrix;
+	mat4 m_viewMatrix;
+	mat4 m_modelMatrix;
+	mat4 m_perspectiveMatrix;
 
-	// Camera info
 	vec3 m_eye;
 	vec3 m_at;
 	vec3 m_up;

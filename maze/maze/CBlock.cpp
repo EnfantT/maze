@@ -3,22 +3,24 @@
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
-#include "linmath.h"
+#include "cgmath.h"
 
 #include "CShader.h"
 #include "CBlock.h"
 
 using namespace std;
 
+#define BLOCK_WIDTH 0.125f
+
 const vec4 CBlock::m_vertices[] = {
-	{  0.125f,  0.125f,  0.125f, 1.0f },
-	{ -0.125f,  0.125f,  0.125f, 1.0f },
-	{ -0.125f, -0.125f,  0.125f, 1.0f },
-	{  0.125f, -0.125f,  0.125f, 1.0f },
-	{  0.125f, -0.125f, -0.125f, 1.0f },
-	{  0.125f,  0.125f, -0.125f, 1.0f },
-	{ -0.125f,  0.125f, -0.125f, 1.0f },
-	{ -0.125f, -0.125f, -0.125f, 1.0f },
+	{  BLOCK_WIDTH,  BLOCK_WIDTH,  BLOCK_WIDTH, 1.0f },
+	{ -BLOCK_WIDTH,  BLOCK_WIDTH,  BLOCK_WIDTH, 1.0f },
+	{ -BLOCK_WIDTH, -BLOCK_WIDTH,  BLOCK_WIDTH, 1.0f },
+	{  BLOCK_WIDTH, -BLOCK_WIDTH,  BLOCK_WIDTH, 1.0f },
+	{  BLOCK_WIDTH, -BLOCK_WIDTH, -BLOCK_WIDTH, 1.0f },
+	{  BLOCK_WIDTH,  BLOCK_WIDTH, -BLOCK_WIDTH, 1.0f },
+	{ -BLOCK_WIDTH,  BLOCK_WIDTH, -BLOCK_WIDTH, 1.0f },
+	{ -BLOCK_WIDTH, -BLOCK_WIDTH, -BLOCK_WIDTH, 1.0f },
 };
 
 const vec4 CBlock::m_colors[] = {
@@ -33,8 +35,9 @@ const vec4 CBlock::m_colors[] = {
 };
 
 const GLuint CBlock::m_indices[] = {
-	0, 1, 2, 6, 7, 5, 4, 0, 3, 2, 4, 7,
-	0, 5, 1, 6,
+	0, 1, 2, 6, 7, 5, 4, 0, 3, 2, 4, 7, 
+	0xFFFFFFFF,
+	0, 5, 1, 6
 };
 
 CBlock::CBlock(void)
@@ -74,8 +77,8 @@ CBlock::CBlock(void)
 			if (map[y][x] == 0)
 				continue;
 
-			m_offset[i][0] = x * 0.25f;
-			m_offset[i][1] = y * 0.25f;
+			m_offset[i][0] = (3 - x) * (BLOCK_WIDTH * 2);
+			m_offset[i][1] = (3 - y) * (BLOCK_WIDTH * 2);
 			m_offset[i][2] = 0;
 			m_offset[i][3] = 1.0f;
 			i++;
@@ -187,7 +190,7 @@ int CBlock::Load(void)
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(m_indices), m_indices, GL_STATIC_DRAW);
-//	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	glBindVertexArray(0);
 
@@ -198,12 +201,12 @@ int CBlock::Load(void)
 int CBlock::Render(void)
 {
 	glBindVertexArray(m_VAO);
-//	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
 
-	glDrawElementsInstanced(GL_TRIANGLE_STRIP, 12, GL_UNSIGNED_INT, 0, m_iCount);
-	glDrawElementsInstanced(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_INT, (void *)(sizeof(GLuint) * 12), m_iCount);
+	glDrawElementsInstanced(GL_TRIANGLE_STRIP, 17, GL_UNSIGNED_INT, 0, m_iCount);
+//	glDrawElementsInstanced(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_INT, (void *)(sizeof(GLuint) * 12), m_iCount);
 
-//	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
 	return 0;

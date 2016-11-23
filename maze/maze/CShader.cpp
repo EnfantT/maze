@@ -3,12 +3,12 @@
 
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
-#include "linmath.h"
+#include "cgmath.h"
 
 #include "CShader.h"
 
 #if defined(_WIN32)
-#define GLSL_VERSION "#version 130 core\n"
+#define GLSL_VERSION "#version 130\n"
 #else
 #define GLSL_VERSION "#version 130\n"
 #endif
@@ -40,41 +40,23 @@ GLSL_VERSION
 
 CShader::CShader()
 	: m_program(0)
+	, m_eye(0.0f, 0.25f, 20.0f)
+	, m_at(0.0f, 0.0f, 0.0f)
+	, m_up(0.0f, 1.0f, 0.0f)
 {
-	/**
-	 * [nicesj]
-	 * We have to handle these matrices.
-	 * Camera & Perspective.
-	vec3 eye = { 0.0f, 30.0f, 300.0f };
-	vec3 center = { 0.0f, 0.0f, 0.0f };
-	vec3 up = { 0.0f, 1.0f, 0.0f };
-	mat4x4_look_at(camera, eye, center, up);
-	mat4x4_perspective(perspective, 3.141592f/4.0f, 1024/768, 1.0f, 1000.0f);
-	 */
-
-	mat4x4_identity(m_viewMatrix);
-	mat4x4_identity(m_perspectiveMatrix);
-	mat4x4_identity(m_modelMatrix);
-	mat4x4_identity(m_mvpMatrix);
-
-	m_eye[0] = 0.0f;
-	m_eye[1] = 0.25f;
-	m_eye[2] = 1.0f;
-	m_at[0] = 0.0f;
-	m_at[1] = 0.0f;
-	m_at[2] = 0.0f;
-	m_up[0] = 0.0f;
-	m_up[1] = 1.0f;
-	m_up[2] = 0.0f;
-
-	mat4x4_look_at(m_viewMatrix, m_eye, m_at, m_up);
-	mat4x4_perspective(m_perspectiveMatrix, 3.141592f / 40.0f, 1024.0f / 768.0f, 0.1f, 100000.0f);
+	m_perspectiveMatrix.setPerspective(PI / 60.0f, 1024.0f / 768.9f, 0.1f, 100000.0f);
+	m_viewMatrix.setLookAt(m_eye, m_at, m_up);
+	m_modelMatrix.setIdentity();
 
 	m_mvpUpdated = GL_TRUE;
 
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_PRIMITIVE_RESTART);
+
 	glShadeModel(GL_SMOOTH);
+	
+	glPrimitiveRestartIndex(0xFFFFFFFF);
 }
 
 CShader::~CShader()
@@ -180,10 +162,7 @@ int CShader::ApplyMVP(void)
 		/**
 		* Order of multiplication is important.
 		*/
-		mat4x4_identity(m_mvpMatrix);
-		mat4x4_mul(m_mvpMatrix, m_mvpMatrix, m_perspectiveMatrix);
-		mat4x4_mul(m_mvpMatrix, m_mvpMatrix, m_viewMatrix);
-		mat4x4_mul(m_mvpMatrix, m_mvpMatrix, m_modelMatrix);
+		m_mvpMatrix = m_perspectiveMatrix * m_viewMatrix * m_modelMatrix;
 		glUniformMatrix4fv(m_mvp, 1, GL_FALSE, (const GLfloat *)m_mvpMatrix);
 		m_mvpUpdated = GL_FALSE;
 	}
@@ -205,48 +184,30 @@ int CShader::Unload(void)
 {
 	if (m_program > 0)
 		glDeleteProgram(m_program);
+
 	m_program = 0;
 	return 0;
 }
 
 int CShader::Translate(float x, float y, float z)
 {
-	m_eye[0] += x;
-	m_eye[1] += y;
-	m_eye[2] += z;
+	m_eye += vec3(x, y, z);
 
-	mat4x4_look_at(m_viewMatrix, m_eye, m_at, m_up);
+	m_viewMatrix.setLookAt(m_eye, m_at, m_up);
 	m_mvpUpdated = GL_TRUE;
 	return 0;
 }
 
-int CShader::Scale(float x, float y, float z, float scale)
+int CShader::Scale(float x, float y, float z, float factor)
 {
-	mat4x4 a;
-
-	mat4x4_identity(a);
-
-	a[0][0] = x;
-	a[1][1] = y;
-	a[2][2] = z;
-
-	mat4x4_scale(m_mvpMatrix, a, scale);
-
+	m_modelMatrix = m_modelMatrix * mat4::scale(vec3(x, y, z));
 	m_mvpUpdated = GL_TRUE;
 	return 0;
 }
 
 int CShader::Rotate(float x, float y, float z, float angle)
 {
-	if (x >= 1.0f)
-		mat4x4_rotate_X(m_modelMatrix, m_modelMatrix, angle);
-
-	if (y >= 1.0f)
-		mat4x4_rotate_Y(m_modelMatrix, m_modelMatrix, angle);
-
-	if (z >= 1.0f)
-		mat4x4_rotate_Z(m_modelMatrix, m_modelMatrix, angle);
-
+	m_modelMatrix = m_modelMatrix * mat4::rotate(vec3(x, y, z), angle);
 	m_mvpUpdated = GL_TRUE;
 	return 0;
 }
