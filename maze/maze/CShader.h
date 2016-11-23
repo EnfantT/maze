@@ -10,8 +10,16 @@ private:
 	GLuint m_EBO;
 	GLuint m_program;
 	GLint m_mvp;
-	GLboolean m_mvp_updated;
-	mat4x4 m_mvp_matrix;
+	GLboolean m_mvpUpdated;
+	mat4x4 m_mvpMatrix;
+	mat4x4 m_viewMatrix;
+	mat4x4 m_modelMatrix;
+	mat4x4 m_perspectiveMatrix;
+
+	// Camera info
+	vec3 m_eye;
+	vec3 m_at;
+	vec3 m_up;
 
 	static const char * const m_vertCode;
 	static const char * const m_fragCode;

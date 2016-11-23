@@ -35,16 +35,16 @@ void CUI::keyCB(GLFWwindow *win, int key, int scancode, int action, int mods)
 	if (action == GLFW_PRESS) {
 		switch (key) {
 		case GLFW_KEY_W: // Up
-			shader->Translate(0.0f, 0.0f, 0.5f);
+			shader->Translate(0.0f, 0.0f, 0.1f);
 			break;
 		case GLFW_KEY_A: // Left
-			shader->Translate(0.0f, -0.5f, 0.0f);
+			shader->Translate(0.0f, -0.1f, 0.0f);
 			break;
 		case GLFW_KEY_D: // Right
-			shader->Translate(0.0f, 0.5f, 0.0f);
+			shader->Translate(0.0f, 0.1f, 0.0f);
 			break;
 		case GLFW_KEY_S: // Down
-			shader->Translate(0.0f, 0.0f, -0.5f);
+			shader->Translate(0.0f, 0.0f, -0.1f);
 			break;
 		case GLFW_KEY_N:
 			shader->Scale(2.0f, 2.0f, 2.0f, 1.0f);

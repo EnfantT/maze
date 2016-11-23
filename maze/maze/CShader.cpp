@@ -26,7 +26,7 @@ GLSL_VERSION
 "out vec4 vertexColor;\n"
 "void main()\n"
 "{\n"
-"   gl_Position = (position + offset) * mvp;\n"
+"   gl_Position = mvp * (position + offset);\n" // Tradition of the opengl. Keeping the matrix on the left and the vertices on the right.
 "   vertexColor = color;\n"
 "}\n";
 
@@ -41,9 +41,6 @@ GLSL_VERSION
 CShader::CShader()
 	: m_program(0)
 {
-	mat4x4 perspective;
-	mat4x4 camera;
-
 	/**
 	 * [nicesj]
 	 * We have to handle these matrices.
@@ -55,11 +52,25 @@ CShader::CShader()
 	mat4x4_perspective(perspective, 3.141592f/4.0f, 1024/768, 1.0f, 1000.0f);
 	 */
 
-	mat4x4_identity(camera);
-	mat4x4_identity(perspective);
+	mat4x4_identity(m_viewMatrix);
+	mat4x4_identity(m_perspectiveMatrix);
+	mat4x4_identity(m_modelMatrix);
+	mat4x4_identity(m_mvpMatrix);
 
-	mat4x4_mul(m_mvp_matrix, camera, perspective);
-	m_mvp_updated = GL_TRUE;
+	m_eye[0] = 0.0f;
+	m_eye[1] = 0.25f;
+	m_eye[2] = 1.0f;
+	m_at[0] = 0.0f;
+	m_at[1] = 0.0f;
+	m_at[2] = 0.0f;
+	m_up[0] = 0.0f;
+	m_up[1] = 1.0f;
+	m_up[2] = 0.0f;
+
+	mat4x4_look_at(m_viewMatrix, m_eye, m_at, m_up);
+	mat4x4_perspective(m_perspectiveMatrix, 3.141592f / 40.0f, 1024.0f / 768.0f, 0.1f, 100000.0f);
+
+	m_mvpUpdated = GL_TRUE;
 
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
@@ -164,10 +175,17 @@ int CShader::ApplyMVP(void)
 
 	glUseProgram(m_program);
 	
-	if (m_mvp_updated == GL_TRUE) {
+	if (m_mvpUpdated == GL_TRUE) {
 		cout << "Update MVP" << endl;
-		glUniformMatrix4fv(m_mvp, 1, GL_FALSE, (const GLfloat *)m_mvp_matrix);
-		m_mvp_updated = GL_FALSE;
+		/**
+		* Order of multiplication is important.
+		*/
+		mat4x4_identity(m_mvpMatrix);
+		mat4x4_mul(m_mvpMatrix, m_mvpMatrix, m_perspectiveMatrix);
+		mat4x4_mul(m_mvpMatrix, m_mvpMatrix, m_viewMatrix);
+		mat4x4_mul(m_mvpMatrix, m_mvpMatrix, m_modelMatrix);
+		glUniformMatrix4fv(m_mvp, 1, GL_FALSE, (const GLfloat *)m_mvpMatrix);
+		m_mvpUpdated = GL_FALSE;
 	}
 
 	return 0;
@@ -193,12 +211,12 @@ int CShader::Unload(void)
 
 int CShader::Translate(float x, float y, float z)
 {
-	mat4x4 t;
+	m_eye[0] += x;
+	m_eye[1] += y;
+	m_eye[2] += z;
 
-	mat4x4_translate(t, x, y, z);
-	mat4x4_mul(m_mvp_matrix, m_mvp_matrix, t);
-
-	m_mvp_updated = GL_TRUE;
+	mat4x4_look_at(m_viewMatrix, m_eye, m_at, m_up);
+	m_mvpUpdated = GL_TRUE;
 	return 0;
 }
 
@@ -212,24 +230,24 @@ int CShader::Scale(float x, float y, float z, float scale)
 	a[1][1] = y;
 	a[2][2] = z;
 
-	mat4x4_scale(m_mvp_matrix, a, scale);
+	mat4x4_scale(m_mvpMatrix, a, scale);
 
-	m_mvp_updated = GL_TRUE;
+	m_mvpUpdated = GL_TRUE;
 	return 0;
 }
 
 int CShader::Rotate(float x, float y, float z, float angle)
 {
 	if (x >= 1.0f)
-		mat4x4_rotate_X(m_mvp_matrix, m_mvp_matrix, angle);
+		mat4x4_rotate_X(m_modelMatrix, m_modelMatrix, angle);
 
 	if (y >= 1.0f)
-		mat4x4_rotate_Y(m_mvp_matrix, m_mvp_matrix, angle);
+		mat4x4_rotate_Y(m_modelMatrix, m_modelMatrix, angle);
 
 	if (z >= 1.0f)
-		mat4x4_rotate_Z(m_mvp_matrix, m_mvp_matrix, angle);
+		mat4x4_rotate_Z(m_modelMatrix, m_modelMatrix, angle);
 
-	m_mvp_updated = GL_TRUE;
+	m_mvpUpdated = GL_TRUE;
 	return 0;
 }
 
