@@ -8,7 +8,7 @@ using namespace std;
 CView *CView::m_instance = NULL;
 
 CView::CView(void)
-: m_eye(0.0f, 0.0f, 20.0f)
+: m_eye(0.0f, 10.0f, 5.0f)
 , m_at(0.0f, 0.0f, 0.0f)
 , m_up(0.0f, 1.0f, 0.0f)
 , m_translate(0.0f, 0.0f, 0.0f)

@@ -53,8 +53,7 @@ CShader::CShader()
 {
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
-
-	glShadeModel(GL_SMOOTH);
+//	glEnable(GL_DEBUG_OUTPUT);
 }
 
 CShader::~CShader()
@@ -64,6 +63,7 @@ CShader::~CShader()
 
 void CShader::Destroy(void)
 {
+	m_pInstance = NULL;
 	delete this;
 }
 

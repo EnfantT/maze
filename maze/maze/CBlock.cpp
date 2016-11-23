@@ -1,3 +1,10 @@
+/**
+ * \brief
+ * This class construct the MAZE.
+ * Vertex list of a cube is stored in CVertices.
+ * This class drawings cubes using "Instancing" method.
+ */
+
 #include <iostream>
 #include <string.h>
 #include "glad/glad.h"
@@ -52,8 +59,8 @@ CBlock::CBlock(void)
 				continue;
 
 			m_offset[i][0] = (3 - x) * (BLOCK_WIDTH * 2);
-			m_offset[i][1] = (3 - y) * (BLOCK_WIDTH * 2);
-			m_offset[i][2] = 0;
+			m_offset[i][1] = 0;
+			m_offset[i][2] = (3 - y) * (BLOCK_WIDTH * 2);
 			m_offset[i][3] = 1.0f;
 			i++;
 		}
