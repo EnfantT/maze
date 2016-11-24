@@ -9,11 +9,11 @@ int CObject::AddTail(CObject *obj)
 	if (m_next) {
 		obj->m_next = m_next;
 		m_next->m_prev = obj;
-		obj->m_prev = this;
-	} else {
-		m_next = obj;
-		obj->m_prev = this;
 	}
+
+	obj->m_prev = this;
+	m_next = obj;
+
 	return 0;
 }
 
