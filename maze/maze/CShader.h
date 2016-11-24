@@ -6,9 +6,8 @@
 class CShader {
 private:
 	GLuint m_program;
-	GLint m_mvp;
+	GLint m_mvpId;
 	GLboolean m_mvpUpdated;
-	mat4 m_mvpMatrix;
 
 	static const char * const m_vertCode;
 	static const char * const m_fragCode;

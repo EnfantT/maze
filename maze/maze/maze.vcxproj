@@ -111,6 +111,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="CBlock.cpp" />
+    <ClCompile Include="CCoordinate.cpp" />
     <ClCompile Include="CModel.cpp" />
     <ClCompile Include="CObject.cpp" />
     <ClCompile Include="CPerspective.cpp" />
@@ -124,8 +125,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CBlock.h" />
+    <ClInclude Include="CCoordinate.h" />
     <ClInclude Include="cgmath.h" />
     <ClInclude Include="CModel.h" />
+    <ClInclude Include="CMovable.h" />
     <ClInclude Include="CObject.h" />
     <ClInclude Include="CPerspective.h" />
     <ClInclude Include="CPlayer.h" />

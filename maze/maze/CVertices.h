@@ -2,7 +2,7 @@
 #if !defined(__CVERTICES_H)
 #define __CVERTICES_H
 
-#define BLOCK_WIDTH 0.125f
+#define BLOCK_WIDTH 0.25f
 
 class CVertices {
 private:
@@ -16,9 +16,9 @@ private:
 	GLuint m_VAO; // Array Object
 	GLuint m_VBO[MAX]; // Buffer Object
 
-	static const vec4 m_vertices[11];
-	static const vec4 m_colors[11];
-	static const GLuint m_indices[21];
+	static const vec4 m_vertices[14];
+	static const vec4 m_colors[14];
+	static const GLuint m_indices[31];
 
 	int UpdateColor(void);
 	int UpdateVertices(void);

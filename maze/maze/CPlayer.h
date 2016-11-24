@@ -2,7 +2,7 @@
 #if !defined(__CPLAYER_H)
 #define __CPLAYER_H
 
-class CPlayer : public CObject {
+class CPlayer : public CObject, public CMovable {
 private:
 	CPlayer(void);
 	virtual ~CPlayer(void);
@@ -19,7 +19,9 @@ public:
 	int Render(void);
 	int Load(void);
 
-	int Translate(vec4 offset);
+	virtual void Translate(vec4 vec);
+	virtual void Rotate(vec3 axis, float angle);
+	virtual void Scale(vec4 scale);
 };
 
 #endif

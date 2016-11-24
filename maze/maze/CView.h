@@ -2,7 +2,7 @@
 #if !defined(__CVIEW_H)
 #define __CVIEW_H
 
-class CView {
+class CView : public CMovable {
 private:
 	// Camera info
 	vec3 m_eye;
@@ -15,9 +15,9 @@ private:
 	vec3 m_rotateAxis;
 	float m_rotateAngle;
 
-	vec3 m_translate;
-
 	mat4 m_rotate;
+	mat4 m_translate;
+	mat4 m_scale;
 
 	static CView *m_instance;
 
@@ -44,7 +44,10 @@ public:
 	mat4 Matrix(void);
 
 	bool Updated(void);
-	void Rotate(vec3 axis, float angle);
+
+	virtual void Translate(vec4 vec);
+	virtual void Rotate(vec3 axis, float angle);
+	virtual void Scale(vec4 scale);
 };
 
 #endif

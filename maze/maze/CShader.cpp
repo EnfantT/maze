@@ -5,6 +5,7 @@
 #include "GLFW/glfw3.h"
 #include "cgmath.h"
 
+#include "CMovable.h"
 #include "CView.h"
 #include "CPerspective.h"
 #include "CModel.h"
@@ -23,7 +24,7 @@ CShader *CShader::m_pInstance = NULL;
 
 const GLchar * const CShader::m_vertCode =
 GLSL_VERSION
-"uniform mat4 mvp;\n" /* mvp: ModelViewProject */
+"uniform mat4 mvp;\n"
 "uniform vec4 playerOffset;\n"
 "uniform bool isPlayer;\n"
 "in vec4 position;\n"
@@ -155,13 +156,17 @@ int CShader::ApplyMVP(void)
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
-	if (CView::GetInstance()->Updated() == true || CPerspective::GetInstance()->Updated() || CModel::GetInstance()->Updated()) {
+	if (CView::GetInstance()->Updated()|| CPerspective::GetInstance()->Updated() || CModel::GetInstance()->Updated()) {
+		mat4 mvp;
+
 		cout << "Update MVP" << endl;
 		/**
 		* Order of multiplication is important.
 		*/
-		m_mvpMatrix = CPerspective::GetInstance()->Matrix() * CView::GetInstance()->Matrix() * CModel::GetInstance()->Matrix();
-		glUniformMatrix4fv(m_mvp, 1, GL_FALSE, (const GLfloat *)m_mvpMatrix);
+		mvp = CPerspective::GetInstance()->Matrix() * CView::GetInstance()->Matrix() * CModel::GetInstance()->Matrix();
+		glUniformMatrix4fv(m_mvpId, 1, GL_FALSE, (const GLfloat *)mvp);
+		if (glGetError() != GL_NO_ERROR)
+			cerr << "Failed to uniform" << endl;
 	}
 
 	return 0;
@@ -169,13 +174,13 @@ int CShader::ApplyMVP(void)
 
 int CShader::Map(void)
 {
-	m_mvp = glGetUniformLocation(m_program, "mvp");
+	m_mvpId = glGetUniformLocation(m_program, "mvp");
 	if (glGetError() != GL_NO_ERROR)
-		cerr << "Failed to find a mvp" << endl;
+		cerr << "Failed to find a m_mvpId" << endl;
 	else
-		glEnableVertexAttribArray(m_mvp);
+		glEnableVertexAttribArray(m_mvpId);
 
-	cout << "mvp index: " << m_mvp << endl;
+	cout << "m_mvp index: " << m_mvpId << endl;
 
 	return 0;
 }

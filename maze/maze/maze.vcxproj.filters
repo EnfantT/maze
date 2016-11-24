@@ -48,6 +48,9 @@
     <ClCompile Include="CVertices.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CCoordinate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CShader.h">
@@ -78,6 +81,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CVertices.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CMovable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CCoordinate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

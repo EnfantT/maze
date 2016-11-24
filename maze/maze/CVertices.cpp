@@ -14,13 +14,18 @@ const vec4 CVertices::m_vertices[] = {
 	{ -BLOCK_WIDTH,  BLOCK_WIDTH,  BLOCK_WIDTH, 1.0f },
 	{ -BLOCK_WIDTH, -BLOCK_WIDTH,  BLOCK_WIDTH, 1.0f },
 	{ BLOCK_WIDTH, -BLOCK_WIDTH,  BLOCK_WIDTH, 1.0f },
+	
 	{ BLOCK_WIDTH, -BLOCK_WIDTH, -BLOCK_WIDTH, 1.0f },
 	{ BLOCK_WIDTH,  BLOCK_WIDTH, -BLOCK_WIDTH, 1.0f },
 	{ -BLOCK_WIDTH,  BLOCK_WIDTH, -BLOCK_WIDTH, 1.0f },
 	{ -BLOCK_WIDTH, -BLOCK_WIDTH, -BLOCK_WIDTH, 1.0f }, // Vertices for a Cube modeling.
-	{ 0.0f, 0.5f, 0.5f, 1.0f },
-	{ -0.5f, 0.0f, 0.5f, 1.0f },
-	{ 0.5f, 0.0f, 0.5f, 1.0f },
+
+	{ -1000.0f, 0.0f, 0.0f, 1.0f },
+	{ 1000.0f, 0.0f, 0.0f, 1.0f }, // X axis
+	{ 0.0f, -1000.0f, 0.0f, 1.0f },
+	{ 0.0f, 1000.0f, 0.0f, 1.0f }, // Y axis
+	{ 0.0f, 0.0f, -1000.0f, 1.0f },
+	{ 0.0f, 0.0f, 1000.0f, 1.0f }, // Z axis
 };
 
 const vec4 CVertices::m_colors[] = {
@@ -32,17 +37,28 @@ const vec4 CVertices::m_colors[] = {
 	{ 1.0f, 1.0f, 1.0f, 1.0f },
 	{ 1.0f, 1.0f, 1.0f, 1.0f },
 	{ 1.0f, 1.0f, 1.0f, 1.0f },
+
+	{ 0.0f, 1.0f, 0.0f, 1.0f },
+	{ 0.0f, 1.0f, 0.0f, 1.0f }, // X axis
+
 	{ 0.0f, 0.0f, 1.0f, 1.0f },
-	{ 0.0f, 0.0f, 1.0f, 1.0f },
-	{ 0.0f, 0.0f, 1.0f, 1.0f }
+	{ 0.0f, 0.0f, 1.0f, 1.0f }, // Y axis
+
+	{ 0.0f, 1.0f, 1.0f, 1.0f },
+	{ 0.0f, 1.0f, 1.0f, 1.0f }, // Z axis
 };
 
 const GLuint CVertices::m_indices[] = {
-	0, 1, 2, 6, 7,
-	5, 4, 0, 3, 2,
-	4, 7, 0xFFFFFFFF,
-	0, 5, 1, 6, 0xFFFFFFFF,
-	8, 9, 10,
+	  0,  1,  2, 6, 7,
+	  5,  4,  0, 3, 2,
+	  4,  7,  0xFFFFFFFF,
+	  0,  5,  1, 6, 0xFFFFFFFF,
+	  0,  1,  2, 0xFFFFFFFF,
+
+	  8,  9,  0xFFFFFFFF, // X axis
+	 10, 11,  0xFFFFFFFF, // Y axis
+	 12, 13, // Z axis
+
 };
 
 CVertices *CVertices::m_instance = NULL;

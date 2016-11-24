@@ -2,7 +2,7 @@
 #if !defined(__CMODEL_H)
 #define __CMODEL_H
 
-class CModel {
+class CModel : public CMovable {
 private:
 	mat4 m_model;
 	static CModel *m_instance;
@@ -16,6 +16,10 @@ public:
 	void Destroy(void);
 	bool Updated(void);
 	mat4 Matrix(void);
+
+	virtual void Translate(vec4 vec);
+	virtual void Rotate(vec3 axis, float angle);
+	virtual void Scale(vec4 scale);
 };
 
 #endif

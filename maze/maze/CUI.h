@@ -15,6 +15,8 @@ private:
 
 	CObject *m_objectList;
 
+	static CMovable *m_target;
+
 public:
 	CUI(void);
 	virtual ~CUI(void);

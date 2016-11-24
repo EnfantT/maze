@@ -14,8 +14,10 @@
 
 #include "CVertices.h"
 #include "CObject.h"
+#include "CMovable.h"
 #include "CBlock.h"
 #include "CPlayer.h"
+#include "CCoordinate.h"
 
 #include "CUI.h"
 
@@ -27,6 +29,7 @@ int main(int argc, char *argv[])
 	CVertices *vertices;
 	CPlayer *player;
 	CBlock *block;
+	CCoordinate *coord;
 	CUI ui;
 	int status;
 
@@ -66,6 +69,17 @@ int main(int argc, char *argv[])
 		return -EFAULT;
 	}
 
+	coord = CCoordinate::GetInstance();
+	if (!coord) {
+		block->Destroy();
+		player->Destroy();
+		vertices->Destroy();
+		shader->Destroy();
+		ui.DestroyContext();
+		return -EFAULT;
+	}
+
+	coord->Load();
 	shader->Load();
 	vertices->Load();
 	block->Load();
@@ -75,12 +89,15 @@ int main(int argc, char *argv[])
 
 	ui.AddObject(block);
 	ui.AddObject(player);
+	ui.AddObject(coord);
 
 	ui.Run();
 
+	ui.DelObject(coord);
 	ui.DelObject(player);
 	ui.DelObject(block);
 
+	coord->Destroy();
 	player->Destroy();
 	block->Destroy();
 	vertices->Destroy();

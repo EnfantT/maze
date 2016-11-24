@@ -5,15 +5,18 @@
 #include "GLFW/glfw3.h"
 
 #include "cgmath.h"
+#include "CMovable.h"
 #include "CView.h"
 #include "CUI.h"
 #include "CShader.h"
 #include "CVertices.h"
 #include "CPlayer.h"
+#include "CModel.h"
 
 using namespace std;
 
 int CUI::m_initialized = 0;
+CMovable *CUI::m_target = NULL;
 
 void CUI::errorCB(int error, const char *description)
 {
@@ -26,63 +29,61 @@ void CUI::ptrCB(GLFWwindow *win, double x, double y)
 
 void CUI::keyCB(GLFWwindow *win, int key, int scancode, int action, int mods)
 {
-	CPlayer *player;
-	CView *view;
 	static GLenum flag = GL_FILL;
 	vec4 move(0.0f, 0.0f, 0.0f, 0.0f);
 
-	player = CPlayer::GetInstance();
-	if (!player) {
-		cerr << "player object is not valid" << endl;
-		return;
-	}
-
-	view = CView::GetInstance();
-	if (!view) {
-		cerr << "view object is not valid" << endl;
-		return;
-	}
+	if (m_target == NULL)
+		m_target = CPlayer::GetInstance();
 
 	if (action == GLFW_PRESS) {
 		switch (key) {
+		case GLFW_KEY_1:
+			m_target = CPlayer::GetInstance();
+			cout << "Player" << endl;
+			break;
+		case GLFW_KEY_2:
+			cout << "Camera" << endl;
+			m_target = CView::GetInstance();
+			break;
+		case GLFW_KEY_3:
+			m_target = CModel::GetInstance();
+			cout << "Model" << endl;
+			break;
 		case GLFW_KEY_UP: // Up : Move eye to up side
 			move.x = 0.0f;
-			move.y = 0.1f;
-			move.z = 0.0f;
-			player->Translate(move);
+			move.y = 0.0f;
+			move.z = -1.0f;
+			m_target->Translate(move);
 			break;
 		case GLFW_KEY_LEFT: // Left
-			move.x = -0.1f;
+			move.x = -1.0f;
 			move.y = 0.0f;
 			move.z = 0.0f;
-			player->Translate(move);
+			m_target->Translate(move);
 			break;
 		case GLFW_KEY_RIGHT: // Right
-			move.x = 0.1f;
+			move.x = 1.0f;
 			move.y = 0.0f;
 			move.z = 0.0f;
-			player->Translate(move);
+			m_target->Translate(move);
 			break;
 		case GLFW_KEY_DOWN: // Down
 			move.x = 0.0f;
-			move.y = -0.1f;
-			move.z = 0.0f;
-			player->Translate(move);
+			move.y = 0.0f;
+			move.z = 1.0f;
+			m_target->Translate(move);
 			break;
 		case GLFW_KEY_W:
-			view->Rotate(vec3(1.0f, 0.0f, 0.0f), PI / 18.0f);
+			m_target->Rotate(vec3(1.0f, 0.0f, 0.0f), PI / 18.0f);
 			break;
 		case GLFW_KEY_A:
-			view->Rotate(vec3(0.0f, 1.0f, 0.0f), PI / 18.0f);
-
+			m_target->Rotate(vec3(0.0f, 1.0f, 0.0f), PI / 18.0f);
 			break;
 		case GLFW_KEY_D:
-			view->Rotate(vec3(0.0f, 1.0f, 0.0f), -PI / 18.0f);
-
+			m_target->Rotate(vec3(0.0f, 1.0f, 0.0f), -PI / 18.0f);
 			break;
 		case GLFW_KEY_S:
-			view->Rotate(vec3(1.0f, 0.0f, 0.0f), -PI / 18.0f);
-
+			m_target->Rotate(vec3(1.0f, 0.0f, 0.0f), -PI / 18.0f);
 			break;
 		case GLFW_KEY_N:
 			break;
@@ -218,7 +219,7 @@ int CUI::Run(void)
 int CUI::AddObject(CObject *obj)
 {
 	if (m_objectList)
-		m_objectList->AddBack(obj);
+		m_objectList->AddTail(obj);
 	else
 		m_objectList = obj;
 

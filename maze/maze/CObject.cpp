@@ -4,7 +4,7 @@
 using namespace std;
 
 
-int CObject::AddBack(CObject *obj)
+int CObject::AddTail(CObject *obj)
 {
 	if (m_next) {
 		obj->m_next = m_next;

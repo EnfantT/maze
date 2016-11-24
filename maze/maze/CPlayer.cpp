@@ -6,6 +6,7 @@
 #include "cgmath.h"
 
 #include "CObject.h"
+#include "CMovable.h"
 #include "CVertices.h"
 #include "CShader.h"
 #include "CPlayer.h"
@@ -53,7 +54,7 @@ int CPlayer::Render(void)
 	glUniform1i(m_isPlayer, 1);
 
 	// Drawing a player
-	glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, (void *)(18 * sizeof(GL_FLOAT)));
+	glDrawElements(GL_TRIANGLE_FAN, 3, GL_UNSIGNED_INT, (void *)(18 * sizeof(GL_FLOAT)));
 	if (glGetError() != GL_NO_ERROR)
 		cerr << __func__ << ":" << __LINE__ << endl;
 
@@ -83,10 +84,19 @@ int CPlayer::Load(void)
 	return 0;
 }
 
-int CPlayer::Translate(vec4 offset)
+void CPlayer::Translate(vec4 vec)
 {
-	m_playerOffset += offset;
-	return 0;
+	m_playerOffset = mat4::translate(vec.x, vec.y, vec.z) * m_playerOffset;
+}
+
+void CPlayer::Rotate(vec3 axis, float angle)
+{
+	m_playerOffset = mat4::rotate(axis, angle) * m_playerOffset;
+}
+
+void CPlayer::Scale(vec4 scale)
+{
+	m_playerOffset = mat4::scale(scale.x, scale.y, scale.z) * m_playerOffset;
 }
 
 /* End of a file */

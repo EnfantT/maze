@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "cgmath.h"
+#include "CMovable.h"
 #include "CView.h"
 
 using namespace std;
@@ -8,15 +9,16 @@ using namespace std;
 CView *CView::m_instance = NULL;
 
 CView::CView(void)
-: m_eye(0.0f, 1.0f, 1.0f)
+: m_eye(0.0f, 0.0f, 5.0f)
 , m_at(0.0f, 0.0f, 0.0f)
 , m_up(0.0f, 1.0f, 0.0f)
-, m_translate(0.0f, 0.0f, 0.0f)
 , m_rotateAxis(0.0f, 0.0f, 0.0f)
 , m_rotateAngle(0.0f)
 , m_updated(true)
 {
 	m_rotate.setIdentity();
+	m_translate.setIdentity();
+	m_scale.setIdentity();
 }
 
 CView::~CView(void)
@@ -83,10 +85,12 @@ void CView::SetUp(float x, float y, float z)
 mat4 CView::Matrix(void)
 {
 	if (m_updated) {
-		m_viewMatrix.setLookAt(m_eye, m_at, m_up);
-		m_viewMatrix = m_viewMatrix * m_rotate;
+		m_viewMatrix = mat4::lookAt(m_eye, m_at, m_up);
 		m_updated = false;
 	}
+
+	cout << "Eye: " << m_eye.x << "," << m_eye.y << "," << m_eye.z << endl;
+	cout << "At: " << m_at.x << "," << m_at.y << "," << m_at.z << endl;
 
 	return m_viewMatrix;
 }
@@ -113,8 +117,20 @@ bool CView::Updated(void)
 
 void CView::Rotate(vec3 axis, float angle)
 {
-	mat4 r;
 	m_rotate = m_rotate * mat4::rotate(axis, angle);
+	m_updated = true;
+}
+
+void CView::Translate(vec4 vec)
+{
+	m_eye = m_eye + vec3(vec.x, vec.y, vec.z);
+	m_at = m_at + vec3(vec.x, vec.y, vec.z);
+	m_updated = true;
+}
+
+void CView::Scale(vec4 scale)
+{
+	m_scale = m_scale * mat4::scale(scale.x, scale.y, scale.z);
 	m_updated = true;
 }
 

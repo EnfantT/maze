@@ -15,7 +15,7 @@ public:
 	virtual int Load(void) { return 0; }
 
 	/* List operator */
-	virtual int AddBack(CObject *obj);
+	virtual int AddTail(CObject *obj);
 	virtual int Remove(void);
 	virtual CObject *Next(void);
 	virtual CObject *Prev(void);
