@@ -8,9 +8,9 @@ using namespace std;
 CPerspective *CPerspective::m_instance = NULL;
 
 CPerspective::CPerspective(void)
-: m_fov(PI/45.0f)
+: m_fov(PI/4.0f)
 , m_ratio(1024.0f / 768.0f)
-, m_near(0.1f)
+, m_near(1.0f)
 , m_far(10000.0f)
 , m_updated(true)
 {

@@ -17,6 +17,8 @@ private:
 
 	vec3 m_translate;
 
+	mat4 m_rotate;
+
 	static CView *m_instance;
 
 	CView(void);
@@ -39,10 +41,10 @@ public:
 	vec3 At(void);
 	vec3 Up(void);
 
-
 	mat4 Matrix(void);
 
 	bool Updated(void);
+	void Rotate(vec3 axis, float angle);
 };
 
 #endif

@@ -8,7 +8,7 @@ using namespace std;
 CView *CView::m_instance = NULL;
 
 CView::CView(void)
-: m_eye(0.0f, 10.0f, 5.0f)
+: m_eye(0.0f, 1.0f, 1.0f)
 , m_at(0.0f, 0.0f, 0.0f)
 , m_up(0.0f, 1.0f, 0.0f)
 , m_translate(0.0f, 0.0f, 0.0f)
@@ -16,7 +16,7 @@ CView::CView(void)
 , m_rotateAngle(0.0f)
 , m_updated(true)
 {
-
+	m_rotate.setIdentity();
 }
 
 CView::~CView(void)
@@ -84,6 +84,7 @@ mat4 CView::Matrix(void)
 {
 	if (m_updated) {
 		m_viewMatrix.setLookAt(m_eye, m_at, m_up);
+		m_viewMatrix = m_viewMatrix * m_rotate;
 		m_updated = false;
 	}
 
@@ -108,6 +109,13 @@ vec3 CView::Up(void)
 bool CView::Updated(void)
 {
 	return m_updated;
+}
+
+void CView::Rotate(vec3 axis, float angle)
+{
+	mat4 r;
+	m_rotate = m_rotate * mat4::rotate(axis, angle);
+	m_updated = true;
 }
 
 /* End of a file */
