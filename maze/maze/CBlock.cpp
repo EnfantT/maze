@@ -16,6 +16,10 @@
 #include "CVertices.h"
 #include "CShader.h"
 #include "CBlock.h"
+#include "CMovable.h"
+#include "CModel.h"
+#include "CPerspective.h"
+#include "CView.h"
 
 using namespace std;
 
@@ -58,9 +62,9 @@ CBlock::CBlock(void)
 			if (map[y][x] == 0)
 				continue;
 
-			m_offset[i][0] = (3 - x) * (BLOCK_WIDTH * 2);
-			m_offset[i][1] = 0;
-			m_offset[i][2] = (3 - y) * (BLOCK_WIDTH * 2);
+			m_offset[i][0] = (x - 3) * (BLOCK_WIDTH * 2);
+			m_offset[i][1] = 0.0f;
+			m_offset[i][2] = (y - 3) * (BLOCK_WIDTH * 2);
 			m_offset[i][3] = 1.0f;
 			i++;
 		}
@@ -115,7 +119,7 @@ int CBlock::UpdateOffset(void)
 		cerr << __func__ << ":" << __LINE__ << endl;
 
 	glBufferData(GL_ARRAY_BUFFER, sizeof(*m_offset) * m_iCount, m_offset, GL_STATIC_DRAW);
-	offset = glGetAttribLocation(CShader::GetInstance()->GetProgram(), "offset");
+	offset = glGetAttribLocation(CShader::GetInstance()->Program(), "offset");
 	cout << "offset index: " << offset << endl;
 	if (offset >= 0) {
 		glEnableVertexAttribArray(offset);
@@ -131,6 +135,14 @@ int CBlock::UpdateOffset(void)
 
 int CBlock::Render(void)
 {
+	mat4 mvp;
+
+	mvp = CPerspective::GetInstance()->Matrix() * CView::GetInstance()->Matrix() * CModel::GetInstance()->Matrix();
+
+	glUniformMatrix4fv(CShader::GetInstance()->MVPId(), 1, GL_TRUE, (const GLfloat *)mvp);
+	if (glGetError() != GL_NO_ERROR)
+		cerr << "Failed to uniform" << endl;
+
 	// Drawing blocks
 	glDrawElementsInstanced(GL_TRIANGLE_STRIP, 17, GL_UNSIGNED_INT, 0, m_iCount);
 	if (glGetError() != GL_NO_ERROR)

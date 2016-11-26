@@ -7,7 +7,11 @@ private:
 	CCoordinate(void);
 	virtual ~CCoordinate(void);
 
+	GLint m_mvpId;
+
 	static CCoordinate *m_instance;
+
+	int m_isCoordIdx;
 public:
 
 	static CCoordinate *GetInstance(void);

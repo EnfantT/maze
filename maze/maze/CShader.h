@@ -24,10 +24,9 @@ public:
 
 	int Load(void);
 	int Map(void);
-	int Unload(void);
-	int ApplyMVP(void);
 
-	GLuint GetProgram(void);
+	GLint MVPId(void);
+	GLuint Program(void);
 	void UseProgram(void);
 };
 

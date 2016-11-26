@@ -4,9 +4,10 @@
 #include "GLFW/glfw3.h"
 
 #include "cgmath.h"
+
 #include "CObject.h"
 #include "CShader.h"
-#include "CCoordinate.h"
+#include "CEnvironment.h"
 #include "CMovable.h"
 #include "CModel.h"
 #include "CPerspective.h"
@@ -14,23 +15,23 @@
 
 using namespace std;
 
-CCoordinate *CCoordinate::m_instance = NULL;
+CEnvironment *CEnvironment::m_instance = NULL;
 
-CCoordinate::CCoordinate(void)
+CEnvironment::CEnvironment(void)
 {
 
 }
 
-CCoordinate::~CCoordinate(void)
+CEnvironment::~CEnvironment(void)
 {
 
 }
 
-CCoordinate *CCoordinate::GetInstance(void)
+CEnvironment *CEnvironment::GetInstance(void)
 {
 	if (!m_instance) {
 		try {
-			m_instance = new CCoordinate();
+			m_instance = new CEnvironment();
 		}
 		catch (...) {
 			return NULL;
@@ -40,13 +41,18 @@ CCoordinate *CCoordinate::GetInstance(void)
 	return m_instance;
 }
 
-void CCoordinate::Destroy(void)
+void CEnvironment::Destroy(void)
 {
 	delete this;
 	m_instance = NULL;
 }
 
-int CCoordinate::Render(void)
+int CEnvironment::Load(void)
+{
+	return 0;
+}
+
+int CEnvironment::Render(void)
 {
 	GLenum status;
 	mat4 mvp;
@@ -57,16 +63,11 @@ int CCoordinate::Render(void)
 	if (glGetError() != GL_NO_ERROR)
 		cerr << "Failed to uniform" << endl;
 
-	glDrawElements(GL_LINES, 8, GL_UNSIGNED_INT, (void *)(sizeof(GLfloat) * 36));
+	glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_INT, (void *)(sizeof(GLfloat) * 45));
 	status = glGetError();
 	if (status != GL_NO_ERROR)
 		cerr << __func__ << ":" << __LINE__ << ":" << status << endl;
 
-	return 0;
-}
-
-int CCoordinate::Load(void)
-{
 	return 0;
 }
 

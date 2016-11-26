@@ -26,6 +26,11 @@ const vec4 CVertices::m_vertices[] = {
 	{ 0.0f, 1000.0f, 0.0f, 1.0f }, // Y axis
 	{ 0.0f, 0.0f, -1000.0f, 1.0f },
 	{ 0.0f, 0.0f, 1000.0f, 1.0f }, // Z axis
+
+	{ 1000.0f, -0.1f, -1000.0f, 1.0f },
+	{ 1000.0f, -0.1f, 1000.0f, 1.0f },
+	{ -1000.0f, -0.1f, 1000.0f, 1.0f },
+	{ -1000.0f, -0.1f, -1000.0f, 1.0f }, // Land
 };
 
 const vec4 CVertices::m_colors[] = {
@@ -46,19 +51,32 @@ const vec4 CVertices::m_colors[] = {
 
 	{ 0.0f, 1.0f, 1.0f, 1.0f },
 	{ 0.0f, 1.0f, 1.0f, 1.0f }, // Z axis
+
+	{ 0.9f, 0.8f, 0.7f, 1.0f },
+	{ 0.9f, 0.8f, 0.7f, 1.0f },
+	{ 0.9f, 0.8f, 0.7f, 1.0f },
+	{ 0.9f, 0.8f, 0.7f, 1.0f }, // Land
+
 };
 
 const GLuint CVertices::m_indices[] = {
 	  0,  1,  2, 6, 7,
 	  5,  4,  0, 3, 2,
 	  4,  7,  0xFFFFFFFF,
-	  0,  5,  1, 6, 0xFFFFFFFF,
-	  0,  1,  2, 0xFFFFFFFF,
+	  0,  5,  1, 6, 0xFFFFFFFF, // cube (18, 0 - 17)
 
-	  8,  9,  0xFFFFFFFF, // X axis
-	 10, 11,  0xFFFFFFFF, // Y axis
-	 12, 13, // Z axis
+	  0,  1,  2, 6, 7,
+	  5,  4,  0, 3, 2,
+	  4,  7,  0xFFFFFFFF,
+	  0,  5,  1, 6, 0xFFFFFFFF, // cube (18, 18 - 35)
 
+	  8,  9,  0xFFFFFFFF, // (3, 36 - 38) X axis
+
+	  10, 11,  0xFFFFFFFF, // (3, 39 - 41) Y axis
+
+	  12, 13, 0xFFFFFFFF, // (3, 42 - 44) Z axis
+
+	  14, 15, 16, 17, // (4, 45 - 48) Land
 };
 
 CVertices *CVertices::m_instance = NULL;
@@ -160,7 +178,7 @@ int CVertices::UpdateVertices(void)
 	* So we do not use the dynamic_draw from here.
 	*/
 	glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertices), m_vertices, GL_STATIC_DRAW);
-	position = glGetAttribLocation(CShader::GetInstance()->GetProgram(), "position");
+	position = glGetAttribLocation(CShader::GetInstance()->Program(), "position");
 	cout << "position index: " << position << endl;
 	if (position >= 0) {
 		glEnableVertexAttribArray(position);
@@ -188,7 +206,7 @@ int CVertices::UpdateColor(void)
 	* So we do not use the dynamic_draw from here.
 	*/
 	glBufferData(GL_ARRAY_BUFFER, sizeof(m_colors), m_colors, GL_STATIC_DRAW);
-	color = glGetAttribLocation(CShader::GetInstance()->GetProgram(), "color");
+	color = glGetAttribLocation(CShader::GetInstance()->Program(), "color");
 	cout << "color index: " << color << endl;
 	if (color >= 0) {
 		glEnableVertexAttribArray(color);

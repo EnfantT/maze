@@ -2,6 +2,11 @@
 #if !defined(__COBJECT_H)
 #define __COBJECT_H
 
+/**
+ * \brief
+ * Classes which inherit this, could be managed by list.
+ * Each object should be linked. to render them all in the Render function of CUI class.
+ */
 class CObject {
 private:
 	CObject *m_prev;

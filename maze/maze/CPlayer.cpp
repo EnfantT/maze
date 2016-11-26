@@ -10,16 +10,19 @@
 #include "CVertices.h"
 #include "CShader.h"
 #include "CPlayer.h"
+#include "CPerspective.h"
+#include "CModel.h"
+#include "CView.h"
 
 using namespace std;
 
 CPlayer *CPlayer::m_instance = NULL;
 
 CPlayer::CPlayer(void)
-: m_playerOffset(0.0f, 0.0f, 0.0f, 1.0f)
-, m_isPlayer(true)
-, m_player(0)
 {
+	m_translate.setIdentity();
+	m_rotate.setIdentity();
+	m_scale.setIdentity();
 }
 
 CPlayer::~CPlayer(void)
@@ -49,54 +52,40 @@ void CPlayer::Destroy(void)
 
 int CPlayer::Render(void)
 {
-	// Only if the player offset is updated.
-	glUniform4f(m_player, m_playerOffset.x, m_playerOffset.y, m_playerOffset.z, m_playerOffset.w);
-	glUniform1i(m_isPlayer, 1);
+	mat4 mvp;
+
+	mvp = CPerspective::GetInstance()->Matrix() * CView::GetInstance()->Matrix() * m_translate * m_scale * m_rotate;
+
+	glUniformMatrix4fv(CShader::GetInstance()->MVPId(), 1, GL_TRUE, (const GLfloat *)mvp);
+	if (glGetError() != GL_NO_ERROR)
+		cerr << "Failed to uniform" << endl;
 
 	// Drawing a player
-	glDrawElements(GL_TRIANGLE_FAN, 3, GL_UNSIGNED_INT, (void *)(18 * sizeof(GL_FLOAT)));
+	glDrawElements(GL_TRIANGLE_STRIP, 18, GL_UNSIGNED_INT, (void *)(18 * sizeof(GL_FLOAT)));
 	if (glGetError() != GL_NO_ERROR)
 		cerr << __func__ << ":" << __LINE__ << endl;
-
-	glUniform1i(m_isPlayer, 0);
 
 	return 0;
 }
 
 int CPlayer::Load(void)
 {
-	m_isPlayer = glGetUniformLocation(CShader::GetInstance()->GetProgram(), "isPlayer");
-	if (glGetError() != GL_NO_ERROR)
-		cerr << __func__ << ":" << __LINE__ << endl;
-	else
-		glEnableVertexAttribArray(m_isPlayer);
-
-	cout << "isPlayer index: " << m_isPlayer << endl;
-
-	m_player = glGetUniformLocation(CShader::GetInstance()->GetProgram(), "playerOffset");
-	if (glGetError() != GL_NO_ERROR)
-		cerr << __func__ << ":" << __LINE__ << endl;
-	else
-		glEnableVertexAttribArray(m_player);
-
-	cout << "playerOffset index: " << m_player << endl;
-
 	return 0;
 }
 
 void CPlayer::Translate(vec4 vec)
 {
-	m_playerOffset = mat4::translate(vec.x, vec.y, vec.z) * m_playerOffset;
+	m_translate = mat4::translate(vec.x, vec.y, vec.z) * m_translate;
 }
 
 void CPlayer::Rotate(vec3 axis, float angle)
 {
-	m_playerOffset = mat4::rotate(axis, angle) * m_playerOffset;
+	m_rotate = mat4::rotate(axis, angle) * m_rotate;
 }
 
 void CPlayer::Scale(vec4 scale)
 {
-	m_playerOffset = mat4::scale(scale.x, scale.y, scale.z) * m_playerOffset;
+	m_scale = mat4::scale(scale.x, scale.y, scale.z) * m_scale;
 }
 
 /* End of a file */

@@ -18,6 +18,7 @@
 #include "CBlock.h"
 #include "CPlayer.h"
 #include "CCoordinate.h"
+#include "CEnvironment.h"
 
 #include "CUI.h"
 
@@ -30,25 +31,28 @@ int main(int argc, char *argv[])
 	CPlayer *player;
 	CBlock *block;
 	CCoordinate *coord;
-	CUI ui;
+	CEnvironment *env;
+	CUI *ui;
 	int status;
 
 	srand((unsigned int)time(NULL));
 
-	status = ui.CreateContext();
+	ui = CUI::GetInstance();
+
+	status = ui->CreateContext();
 	if (status < 0)
 		return status;
 
 	shader = CShader::GetInstance();
 	if (!shader) {
-		ui.DestroyContext();
+		ui->DestroyContext();
 		return -EFAULT;
 	}
 
 	vertices = CVertices::GetInstance();
 	if (!vertices) {
 		shader->Destroy();
-		ui.DestroyContext();
+		ui->DestroyContext();
 		return -EFAULT;
 	}
 
@@ -56,7 +60,7 @@ int main(int argc, char *argv[])
 	if (!player) {
 		vertices->Destroy();
 		shader->Destroy();
-		ui.DestroyContext();
+		ui->DestroyContext();
 		return -EFAULT;
 	}
 
@@ -65,7 +69,7 @@ int main(int argc, char *argv[])
 		player->Destroy();
 		vertices->Destroy();
 		shader->Destroy();
-		ui.DestroyContext();
+		ui->DestroyContext();
 		return -EFAULT;
 	}
 
@@ -75,37 +79,55 @@ int main(int argc, char *argv[])
 		player->Destroy();
 		vertices->Destroy();
 		shader->Destroy();
-		ui.DestroyContext();
+		ui->DestroyContext();
 		return -EFAULT;
 	}
 
-	coord->Load();
+	env = CEnvironment::GetInstance();
+	if (!env) {
+		coord->Destroy();
+		block->Destroy();
+		player->Destroy();
+		vertices->Destroy();
+		shader->Destroy();
+		ui->DestroyContext();
+		return -EFAULT;
+	}
+
+	/**
+	 * Shader must be loaded first.
+	 */
 	shader->Load();
+
 	vertices->Load();
 	block->Load();
 	player->Load();
+	coord->Load();
+	env->Load();
 
 	shader->Map();
 
-	ui.AddObject(block);
-	ui.AddObject(player);
-	ui.AddObject(coord);
+	ui->AddObject(env);
+	ui->AddObject(block);
+	ui->AddObject(player);
+	ui->AddObject(coord);
 
-	ui.Run();
+	ui->Run();
 
-	ui.DelObject(coord);
-	ui.DelObject(player);
-	ui.DelObject(block);
+	ui->DelObject(env);
+	ui->DelObject(coord);
+	ui->DelObject(player);
+	ui->DelObject(block);
 
 	coord->Destroy();
 	player->Destroy();
 	block->Destroy();
-	vertices->Destroy();
+	env->Destroy();
 
-	shader->Unload();
+	vertices->Destroy();
 	shader->Destroy();
 
-	status = ui.DestroyContext();
+	status = ui->DestroyContext();
 
 	return 0;
 }

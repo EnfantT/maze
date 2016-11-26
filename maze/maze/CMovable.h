@@ -2,6 +2,10 @@
 #if !defined(__CMOVABLE_H)
 #define __CMOVABLE
 
+/**
+ * \brief
+ * Every class which can be moved, scaled, roated, should inherit this class.
+ */
 class CMovable {
 public:
 	CMovable(void) {}

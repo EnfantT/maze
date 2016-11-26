@@ -1,3 +1,18 @@
+/*
+OpenGL Version	GLSL Version	#version tag
+ 1.2	none	    none
+ 2.0	1.10.59	    110
+ 2.1	1.20.8	    120
+ 3.0	1.30.10	    130
+ 3.1	1.40.08	    140
+ 3.2	1.50.11	    150
+ 3.3	3.30.6	    330
+ 4.0	4.00.9	    400
+ 4.1	4.10.6	    410
+ 4.2	4.20.6	    420
+ 4.3	4.30.6	    430
+ 4.5 ...
+*/
 #include <iostream>
 #include <errno.h>
 
@@ -13,7 +28,7 @@
 #include "CShader.h"
 
 #if defined(_WIN32)
-#define GLSL_VERSION "#version 130\n"
+#define GLSL_VERSION "#version 430 core\n"
 #else
 #define GLSL_VERSION "#version 130\n"
 #endif
@@ -25,19 +40,13 @@ CShader *CShader::m_pInstance = NULL;
 const GLchar * const CShader::m_vertCode =
 GLSL_VERSION
 "uniform mat4 mvp;\n"
-"uniform vec4 playerOffset;\n"
-"uniform bool isPlayer;\n"
 "in vec4 position;\n"
 "in vec4 color;\n"
 "in vec4 offset;\n"
 "out vec4 vertexColor;\n"
 "void main()\n"
 "{\n"
-"   if (isPlayer) {\n"
-"      gl_Position = mvp * (position + playerOffset);\n"
-"   } else {\n"
-"      gl_Position = mvp * (position + offset);\n" // Tradition of the opengl. Keeping the matrix on the left and the vertices on the right.
-"   }\n"
+"   gl_Position = mvp * (position + offset);\n"
 "   vertexColor = color;\n"
 "}\n";
 
@@ -54,12 +63,16 @@ CShader::CShader()
 {
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
+	glCullFace(GL_BACK);
 //	glEnable(GL_DEBUG_OUTPUT);
 }
 
 CShader::~CShader()
 {
-	// m_program should be destroyed via Unload.
+	if (m_program > 0) {
+		glDeleteProgram(m_program);
+		m_program = 0;
+	}
 }
 
 void CShader::Destroy(void)
@@ -148,29 +161,6 @@ void CShader::UseProgram(void)
 	glUseProgram(m_program);
 }
 
-int CShader::ApplyMVP(void)
-{
-	if (m_program == 0)
-		return -EFAULT;
-
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
-	if (CView::GetInstance()->Updated()|| CPerspective::GetInstance()->Updated() || CModel::GetInstance()->Updated()) {
-		mat4 mvp;
-
-		cout << "Update MVP" << endl;
-		/**
-		* Order of multiplication is important.
-		*/
-		mvp = CPerspective::GetInstance()->Matrix() * CView::GetInstance()->Matrix() * CModel::GetInstance()->Matrix();
-		glUniformMatrix4fv(m_mvpId, 1, GL_FALSE, (const GLfloat *)mvp);
-		if (glGetError() != GL_NO_ERROR)
-			cerr << "Failed to uniform" << endl;
-	}
-
-	return 0;
-}
 
 int CShader::Map(void)
 {
@@ -185,18 +175,14 @@ int CShader::Map(void)
 	return 0;
 }
 
-int CShader::Unload(void)
-{
-	if (m_program > 0)
-		glDeleteProgram(m_program);
-
-	m_program = 0;
-	return 0;
-}
-
-GLuint CShader::GetProgram(void)
+GLuint CShader::Program(void)
 {
 	return m_program;
+}
+
+GLint CShader::MVPId(void)
+{
+	return m_mvpId;
 }
 
 // End of a file

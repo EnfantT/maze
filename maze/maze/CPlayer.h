@@ -9,9 +9,9 @@ private:
 
 	static CPlayer *m_instance;
 
-	vec4 m_playerOffset;
-	GLint m_isPlayer;
-	GLint m_player;
+	mat4 m_translate;
+	mat4 m_rotate;
+	mat4 m_scale;
 
 public:
 	static CPlayer *GetInstance(void);

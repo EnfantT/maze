@@ -17,7 +17,6 @@ private:
 
 	mat4 m_rotate;
 	mat4 m_translate;
-	mat4 m_scale;
 
 	static CView *m_instance;
 

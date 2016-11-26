@@ -51,6 +51,9 @@
     <ClCompile Include="CCoordinate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CEnvironment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CShader.h">
@@ -87,6 +90,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CCoordinate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CEnvironment.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CMatrix.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

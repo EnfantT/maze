@@ -11,12 +11,12 @@
 #include "CShader.h"
 #include "CVertices.h"
 #include "CPlayer.h"
+#include "CPerspective.h"
 #include "CModel.h"
 
 using namespace std;
 
-int CUI::m_initialized = 0;
-CMovable *CUI::m_target = NULL;
+CUI *CUI::m_instance = NULL;
 
 void CUI::errorCB(int error, const char *description)
 {
@@ -27,63 +27,76 @@ void CUI::ptrCB(GLFWwindow *win, double x, double y)
 {
 }
 
+void resizeCB(GLFWwindow* win, int width, int height)
+{
+	glViewport(0, 0, width, height);
+	CPerspective::GetInstance()->SetRatio((float)width / (float)height);
+}
+
 void CUI::keyCB(GLFWwindow *win, int key, int scancode, int action, int mods)
 {
 	static GLenum flag = GL_FILL;
 	vec4 move(0.0f, 0.0f, 0.0f, 0.0f);
 
-	if (m_target == NULL)
-		m_target = CPlayer::GetInstance();
+	if (!CUI::GetInstance()->ControlTarget())
+		CUI::GetInstance()->SetControlTarget(CPlayer::GetInstance());
 
 	if (action == GLFW_PRESS) {
 		switch (key) {
 		case GLFW_KEY_1:
-			m_target = CPlayer::GetInstance();
+			CUI::GetInstance()->SetControlTarget(CPlayer::GetInstance());
 			cout << "Player" << endl;
 			break;
 		case GLFW_KEY_2:
 			cout << "Camera" << endl;
-			m_target = CView::GetInstance();
+			CUI::GetInstance()->SetControlTarget(CView::GetInstance());
 			break;
 		case GLFW_KEY_3:
-			m_target = CModel::GetInstance();
+			CUI::GetInstance()->SetControlTarget(CModel::GetInstance());
 			cout << "Model" << endl;
 			break;
 		case GLFW_KEY_UP: // Up : Move eye to up side
 			move.x = 0.0f;
 			move.y = 0.0f;
-			move.z = -1.0f;
-			m_target->Translate(move);
+			move.z = 0.5f;
+			CUI::GetInstance()->ControlTarget()->Translate(move);
 			break;
 		case GLFW_KEY_LEFT: // Left
-			move.x = -1.0f;
+			move.x = -0.5f;
 			move.y = 0.0f;
 			move.z = 0.0f;
-			m_target->Translate(move);
+			CUI::GetInstance()->ControlTarget()->Translate(move);
 			break;
 		case GLFW_KEY_RIGHT: // Right
-			move.x = 1.0f;
+			move.x = 0.5f;
 			move.y = 0.0f;
 			move.z = 0.0f;
-			m_target->Translate(move);
+			CUI::GetInstance()->ControlTarget()->Translate(move);
 			break;
 		case GLFW_KEY_DOWN: // Down
 			move.x = 0.0f;
 			move.y = 0.0f;
-			move.z = 1.0f;
-			m_target->Translate(move);
+			move.z = -0.5f;
+			CUI::GetInstance()->ControlTarget()->Translate(move);
 			break;
-		case GLFW_KEY_W:
-			m_target->Rotate(vec3(1.0f, 0.0f, 0.0f), PI / 18.0f);
+		case GLFW_KEY_Q:
+			CUI::GetInstance()->ControlTarget()->Rotate(vec3(1.0f, 0.0f, 0.0f), PI / 18.0f);
 			break;
 		case GLFW_KEY_A:
-			m_target->Rotate(vec3(0.0f, 1.0f, 0.0f), PI / 18.0f);
+			CUI::GetInstance()->ControlTarget()->Rotate(vec3(1.0f, 0.0f, 0.0f), -PI / 18.0f);
 			break;
-		case GLFW_KEY_D:
-			m_target->Rotate(vec3(0.0f, 1.0f, 0.0f), -PI / 18.0f);
+
+		case GLFW_KEY_W:
+			CUI::GetInstance()->ControlTarget()->Rotate(vec3(0.0f, 1.0f, 0.0f), PI / 18.0f);
 			break;
 		case GLFW_KEY_S:
-			m_target->Rotate(vec3(1.0f, 0.0f, 0.0f), -PI / 18.0f);
+			CUI::GetInstance()->ControlTarget()->Rotate(vec3(0.0f, 1.0f, 0.0f), -PI / 18.0f);
+			break;
+		case GLFW_KEY_E:
+			CUI::GetInstance()->ControlTarget()->Rotate(vec3(0.0f, 0.0f, 1.0f), PI / 18.0f);
+			break;
+		case GLFW_KEY_D:
+			CUI::GetInstance()->ControlTarget()->Rotate(vec3(0.0f, 0.0f, 1.0f), -PI / 18.0f);
 			break;
 		case GLFW_KEY_N:
 			break;
@@ -116,36 +129,55 @@ CUI::CUI(void)
 	: m_win(NULL)
 	, m_objectList(NULL)
 {
-	if (m_initialized == 0) {
-		int status;
+	int status;
 
-		status = glfwInit();
-		if (status == 0) {
-			cout << "glfwInit: " << status;
-			return;
-		}
-
-		glfwSetErrorCallback(errorCB);
-
-		m_initialized = 1;
-
-		cout << glfwGetVersionString() << endl;
+	status = glfwInit();
+	if (status == 0) {
+		cout << "glfwInit: " << status;
+		return;
 	}
+
+	glfwSetErrorCallback(errorCB);
+	cout << glfwGetVersionString() << endl;
 }
 
 CUI::~CUI(void)
 {
-	if (m_initialized == 1) {
-		glfwTerminate();
-		m_initialized = 0;
+	glfwTerminate();
+}
+
+void CUI::SetControlTarget(CMovable *target)
+{
+	m_target = target;
+}
+
+CMovable *CUI::ControlTarget(void)
+{
+	return m_target;
+}
+
+CUI *CUI::GetInstance(void)
+{
+	if (!m_instance) {
+		try {
+			m_instance = new CUI();
+		}
+		catch (...) {
+			return NULL;
+		}
 	}
+
+	return m_instance;
+}
+
+void CUI::Destroy(void)
+{
+	delete this;
+	m_instance = NULL;
 }
 
 int CUI::CreateContext(int w, int h, const char *title)
 {
-	if (m_initialized == 0)
-		return -EFAULT;
-
 	if (w == 0 || h == 0) {
 		w = 1024;
 		h = 768;
@@ -158,6 +190,7 @@ int CUI::CreateContext(int w, int h, const char *title)
 	if (!m_win)
 		return -EFAULT;
 
+	glfwSetWindowSizeCallback(m_win, resizeCB);
 	glfwMakeContextCurrent(m_win);
 	glfwSetKeyCallback(m_win, keyCB);
 	glfwSetCursorPosCallback(m_win, ptrCB);
@@ -174,9 +207,6 @@ int CUI::CreateContext(int w, int h, const char *title)
 
 int CUI::DestroyContext(void)
 {
-	if (m_initialized == 0)
-		return -EFAULT;
-
 	if (m_win == NULL)
 		return -EFAULT;
 
@@ -188,15 +218,14 @@ int CUI::Run(void)
 {
 	CObject *obj;
 
-	if (m_initialized == 0)
-		return -EFAULT;
-
 	if (m_win == NULL)
 		return -EFAULT;
 
 	while (glfwWindowShouldClose(m_win) == 0) {
 		CShader::GetInstance()->UseProgram();
-		CShader::GetInstance()->ApplyMVP();
+
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		obj = m_objectList;
 		CVertices::GetInstance()->BindVAO();
@@ -208,8 +237,8 @@ int CUI::Run(void)
 		CVertices::GetInstance()->UnbindEBO();
 		CVertices::GetInstance()->UnbindVAO();
 
-
-		glfwPollEvents();
+		//glfwPollEvents();
+		glfwWaitEvents();
 		glfwSwapBuffers(m_win);
 	}
 
