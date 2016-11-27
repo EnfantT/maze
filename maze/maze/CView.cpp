@@ -12,9 +12,9 @@ CView::CView(void)
 : m_eye(0.0f, 0.0f, 10.0f)
 , m_at(0.0f, 0.0f, 0.0f)
 , m_up(0.0f, 1.0f, 0.0f)
+, m_updated(true)
 , m_rotateAxis(0.0f, 0.0f, 0.0f)
 , m_rotateAngle(0.0f)
-, m_updated(true)
 {
 	m_rotate.setIdentity();
 	m_translate.setIdentity();

@@ -241,7 +241,7 @@ struct mat4
 	static mat4 rotate(vec3& axis, float angle) { return mat4().setRotate(axis, angle); }
 
 	// binary operator overloading
-	inline vec4 operator*(const vec4& v)
+	inline vec4 operator*(const vec4 &v)
 	{
 		vec4 r1 = vec4(_11, _12, _13, _14);
 		vec4 r2 = vec4(_21, _22, _23, _24);
@@ -250,7 +250,7 @@ struct mat4
 
 		return vec4(r1.dot(v), r2.dot(v), r3.dot(v), r4.dot(v));
 	}
-	inline mat4 operator*(mat4& M)
+	inline mat4 operator*(const mat4& M)
 	{
 		vec4 r1 = vec4(_11, _12, _13, _14); vec4 c1 = vec4(M._11, M._21, M._31, M._41);
 		vec4 r2 = vec4(_21, _22, _23, _24); vec4 c2 = vec4(M._12, M._22, M._32, M._42);
