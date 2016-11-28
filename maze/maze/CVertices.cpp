@@ -6,6 +6,7 @@
 
 #include "CShader.h"
 #include "CVertices.h"
+#include "CMisc.h"
 
 using namespace std;
 
@@ -83,9 +84,13 @@ CVertices *CVertices::m_instance = NULL;
 
 CVertices::CVertices(void)
 {
+#if !defined(_OLD_GL)
 	glEnable(GL_PRIMITIVE_RESTART);
-
 	glPrimitiveRestartIndex(0xFFFFFFFF);
+#else
+	glEnable(GL_PRIMITIVE_RESTART_FIXED_INDEX);
+	StatusPrint();
+#endif
 
 	glGenVertexArrays(1, &m_VAO);
 	glGenBuffers(MAX, m_VBO);
@@ -119,8 +124,7 @@ void CVertices::Destroy(void)
 int CVertices::BindEBO(void)
 {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VBO[INDICES]);
-	if (glGetError() != GL_NO_ERROR)
-		cerr << __func__ << ":" << __LINE__ << endl;
+	StatusPrint();
 
 	return 0;
 }
@@ -134,8 +138,7 @@ int CVertices::UnbindEBO(void)
 int CVertices::BindVAO(void)
 {
 	glBindVertexArray(m_VAO);
-	if (glGetError() != GL_NO_ERROR)
-	cerr << __func__ << ":" << __LINE__ << endl;
+	StatusPrint();
 
 	return 0;
 }
@@ -206,6 +209,7 @@ int CVertices::UpdateColor(void)
 	* So we do not use the dynamic_draw from here.
 	*/
 	glBufferData(GL_ARRAY_BUFFER, sizeof(m_colors), m_colors, GL_STATIC_DRAW);
+
 	color = glGetAttribLocation(CShader::GetInstance()->Program(), "color");
 	cout << "color index: " << color << endl;
 	if (color >= 0) {

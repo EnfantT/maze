@@ -20,6 +20,7 @@
 #include "CModel.h"
 #include "CPerspective.h"
 #include "CView.h"
+#include "CMisc.h"
 
 using namespace std;
 
@@ -102,34 +103,40 @@ void CBlock::Destroy(void)
 
 int CBlock::Load(void)
 {
+#if !defined(_OLD_GL)
+	m_offsetId = glGetAttribLocation(CShader::GetInstance()->Program(), "offset");
+	cout << "offset index: " << m_offsetId << endl;
+	if (m_offsetId >= 0)
+		glEnableVertexAttribArray(m_offsetId);
 	CVertices::GetInstance()->BindVAO();
-	UpdateOffset();
+
+	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+	StatusPrint();
+	glBufferData(GL_ARRAY_BUFFER, sizeof(*m_offset) * m_iCount, m_offset, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glVertexAttribPointer(m_offsetId, 4, GL_FLOAT, GL_FALSE,
+		sizeof(float) * 4,
+		0);
+
+	glVertexAttribDivisor(m_offsetId, 1);
 	CVertices::GetInstance()->UnbindVAO();
+#else
+	m_offsetId = glGetUniformLocation(CShader::GetInstance()->Program(), "offset");
+	cout << "offset index: " << m_offsetId << endl;
+#endif
+
+	m_isBlockId = glGetUniformLocation(CShader::GetInstance()->Program(), "isBlock");
+	cout << "isBlock index: " << m_isBlockId << endl;
 
 	m_loaded = true;
 	return 0;
 }
 
-int CBlock::UpdateOffset(void)
+int CBlock::UpdateOffset(int index)
 {
-	GLint offset;
-
-	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-	if (glGetError() != GL_NO_ERROR)
-		cerr << __func__ << ":" << __LINE__ << endl;
-
-	glBufferData(GL_ARRAY_BUFFER, sizeof(*m_offset) * m_iCount, m_offset, GL_STATIC_DRAW);
-	offset = glGetAttribLocation(CShader::GetInstance()->Program(), "offset");
-	cout << "offset index: " << offset << endl;
-	if (offset >= 0) {
-		glEnableVertexAttribArray(offset);
-		glVertexAttribPointer(offset, 4, GL_FLOAT, GL_FALSE,
-			sizeof(float) * 4,
-			(void *)0);
-	}
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glVertexAttribDivisor(offset, 1);
+	glUniform4f(m_offsetId, m_offset[index].x, m_offset[index].y, m_offset[index].z, m_offset[index].w);
+	StatusPrint();
 	return 0;
 }
 
@@ -140,13 +147,24 @@ int CBlock::Render(void)
 	mvp = CPerspective::GetInstance()->Matrix() * CView::GetInstance()->Matrix() * CModel::GetInstance()->Matrix();
 
 	glUniformMatrix4fv(CShader::GetInstance()->MVPId(), 1, GL_TRUE, (const GLfloat *)mvp);
-	if (glGetError() != GL_NO_ERROR)
-		cerr << "Failed to uniform" << endl;
+	StatusPrint();
+
+	glUniform1i(m_isBlockId, 1);
 
 	// Drawing blocks
+#if !defined(_OLD_GL)
 	glDrawElementsInstanced(GL_TRIANGLE_STRIP, 17, GL_UNSIGNED_INT, 0, m_iCount);
-	if (glGetError() != GL_NO_ERROR)
-		cerr << __func__ << ":" << __LINE__ << endl;
+	StatusPrint();
+#else
+	int i;
+
+	for (i = 0; i < m_iCount; i++) {
+		UpdateOffset(i);
+		glDrawElements(GL_TRIANGLE_STRIP, 17, GL_UNSIGNED_INT, 0);
+		StatusPrint();
+	}
+#endif
+	glUniform1i(m_isBlockId, 0);
 
 	return 0;
 }

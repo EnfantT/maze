@@ -13,6 +13,7 @@
 #include "CPerspective.h"
 #include "CModel.h"
 #include "CView.h"
+#include "CMisc.h"
 
 using namespace std;
 
@@ -57,13 +58,16 @@ int CPlayer::Render(void)
 	mvp = CPerspective::GetInstance()->Matrix() * CView::GetInstance()->Matrix() * m_translate * m_scale * m_rotate;
 
 	glUniformMatrix4fv(CShader::GetInstance()->MVPId(), 1, GL_TRUE, (const GLfloat *)mvp);
-	if (glGetError() != GL_NO_ERROR)
-		cerr << "Failed to uniform" << endl;
+	StatusPrint();
 
 	// Drawing a player
-	glDrawElements(GL_TRIANGLE_STRIP, 18, GL_UNSIGNED_INT, (void *)(18 * sizeof(GL_FLOAT)));
-	if (glGetError() != GL_NO_ERROR)
-		cerr << __func__ << ":" << __LINE__ << endl;
+#if !defined(_OLD_GL)
+	glDrawElements(GL_TRIANGLE_STRIP, 18, GL_UNSIGNED_INT, (void *)(18 * sizeof(GLuint)));
+	StatusPrint();
+#else
+	glDrawElements(GL_TRIANGLE_STRIP, 18, GL_UNSIGNED_INT, (void *)(18 * sizeof(GLuint)));
+	StatusPrint();
+#endif	
 
 	return 0;
 }

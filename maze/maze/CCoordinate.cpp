@@ -11,6 +11,7 @@
 #include "CModel.h"
 #include "CPerspective.h"
 #include "CView.h"
+#include "CMisc.h"
 
 using namespace std;
 
@@ -48,19 +49,15 @@ void CCoordinate::Destroy(void)
 
 int CCoordinate::Render(void)
 {
-	GLenum status;
 	mat4 mvp;
 
 	mvp = CPerspective::GetInstance()->Matrix() * CView::GetInstance()->Matrix() * CModel::GetInstance()->Matrix();
 
 	glUniformMatrix4fv(CShader::GetInstance()->MVPId(), 1, GL_TRUE, (const GLfloat *)mvp);
-	if (glGetError() != GL_NO_ERROR)
-		cerr << "Failed to uniform" << endl;
+	StatusPrint();
 
 	glDrawElements(GL_LINES, 8, GL_UNSIGNED_INT, (void *)(sizeof(GLfloat) * 36));
-	status = glGetError();
-	if (status != GL_NO_ERROR)
-		cerr << __func__ << ":" << __LINE__ << ":" << status << endl;
+	StatusPrint();
 
 	return 0;
 }

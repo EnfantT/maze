@@ -6,13 +6,15 @@ class CBlock : public CObject {
 private:
 	vec4 *m_offset;
 	GLuint m_VBO; // Vertex Buffer Object
+	GLint m_offsetId;
+	GLint m_isBlockId;
 	int m_iCount;
 
 	bool m_geometry_updated;
 	bool m_color_updated;
 	bool m_loaded;
 
-	int UpdateOffset(void);
+	int UpdateOffset(int index = 0);
 
 	CBlock(void);
 	virtual ~CBlock(void);

@@ -24,13 +24,19 @@ OpenGL Version	GLSL Version	#version tag
 #include "CView.h"
 #include "CPerspective.h"
 #include "CModel.h"
-
 #include "CShader.h"
+#include "CMisc.h"
 
 #if defined(_WIN32)
 #define GLSL_VERSION "#version 430 core\n"
 #else
 #define GLSL_VERSION "#version 130\n"
+#endif
+
+#if defined(_OLD_GL)
+#define GLSL_OFFSET "uniform vec4 offset;\n"
+#else
+#define GLSL_OFFSET "in vec4 offset;\n"
 #endif
 
 using namespace std;
@@ -40,13 +46,18 @@ CShader *CShader::m_pInstance = NULL;
 const GLchar * const CShader::m_vertCode =
 GLSL_VERSION
 "uniform mat4 mvp;\n"
+"uniform bool isBlock;\n"
+GLSL_OFFSET
 "in vec4 position;\n"
 "in vec4 color;\n"
-"in vec4 offset;\n"
 "out vec4 vertexColor;\n"
 "void main()\n"
 "{\n"
-"   gl_Position = mvp * (position + offset);\n"
+"   if (isBlock) {\n"
+"      gl_Position = mvp * (position + offset);\n"
+"   } else {\n"
+"      gl_Position = mvp * position;\n"
+"   }\n"
 "   vertexColor = color;\n"
 "}\n";
 
@@ -132,9 +143,9 @@ int CShader::Load(void)
 	fragShader = LoadNCompile(GL_FRAGMENT_SHADER, m_fragCode);
 
 	m_program = glCreateProgram();
-	if (m_program == 0) {
+	if (m_program == 0)
 		return -EFAULT;
-	}
+
 	glAttachShader(m_program, vertShader);
 	glAttachShader(m_program, fragShader);
 	glLinkProgram(m_program);
@@ -165,10 +176,7 @@ void CShader::UseProgram(void)
 int CShader::Map(void)
 {
 	m_mvpId = glGetUniformLocation(m_program, "mvp");
-	if (glGetError() != GL_NO_ERROR)
-		cerr << "Failed to find a m_mvpId" << endl;
-	else
-		glEnableVertexAttribArray(m_mvpId);
+	StatusPrint();
 
 	cout << "m_mvp index: " << m_mvpId << endl;
 
