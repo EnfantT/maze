@@ -52,7 +52,6 @@ CShader::CShader()
 "in vec4 position;\n"
 "in vec4 color;\n"
 "out vec4 fragColor;\n"
-"out bool fragIsBlock;\n"
 "void main()\n"
 "{\n"
 "   if (isBlock) {\n"
@@ -60,13 +59,11 @@ CShader::CShader()
 "   } else {\n"
 "      gl_Position = mvp * position;\n"
 "   }\n"
-"   fragIsBlock = isBlock;\n"
 "   fragColor = color;\n"
 "}\n";
 		m_fragCode =
 "#version 130\n"
 "in vec4 fragColor;\n"
-"in bool fragIsBlock;\n"
 "void main()\n"
 "{\n"
 "   gl_FragColor = fragColor;\n"
@@ -80,7 +77,6 @@ CShader::CShader()
 "in vec4 position;\n"
 "in vec4 color;\n"
 "out vec4 fragColor;\n"
-"out bool fragIsBlock;\n"
 "void main()\n"
 "{\n"
 "   if (isBlock) {\n"
@@ -88,13 +84,11 @@ CShader::CShader()
 "   } else {\n"
 "      gl_Position = mvp * position;\n"
 "   }\n"
-"   fragIsBlock = isBlock;\n"
 "   fragColor = color;\n"
 "}\n";
 		m_fragCode =
 "#version 130\n"
 "in vec4 fragColor;\n"
-"in bool fragIsBlock;\n"
 "void main()\n"
 "{\n"
 "   gl_FragColor = fragColor;\n"
