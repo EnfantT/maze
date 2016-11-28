@@ -1,10 +1,13 @@
 #include <iostream>
+#include <stdlib.h>
 #include <errno.h>
 
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
 #include "cgmath.h"
+
+#include "CMisc.h"
 #include "CMovable.h"
 #include "CView.h"
 #include "CUI.h"
@@ -127,6 +130,8 @@ CUI::CUI(void)
 
 	glfwSetErrorCallback(errorCB);
 	cout << glfwGetVersionString() << endl;
+	if (atof(glfwGetVersionString()) >= 3.1f)
+		CMisc::EnableVersion_3_1();
 }
 
 CUI::~CUI(void)

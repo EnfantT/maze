@@ -9,9 +9,11 @@
 
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
-#include "cgmath.h"
-#include "CShader.h"
 
+#include "cgmath.h"
+
+#include "CMisc.h"
+#include "CShader.h"
 #include "CVertices.h"
 #include "CObject.h"
 #include "CMovable.h"

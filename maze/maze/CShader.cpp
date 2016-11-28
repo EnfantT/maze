@@ -20,34 +20,35 @@ OpenGL Version	GLSL Version	#version tag
 #include "GLFW/glfw3.h"
 #include "cgmath.h"
 
+#include "CMisc.h"
 #include "CMovable.h"
 #include "CView.h"
 #include "CPerspective.h"
 #include "CModel.h"
 #include "CShader.h"
-#include "CMisc.h"
 
 #if defined(_WIN32)
-#define GLSL_VERSION "#version 430 core\n"
+	// Define for windows
 #else
-#define GLSL_VERSION "#version 130\n"
-#endif
-
-#if defined(_OLD_GL)
-#define GLSL_OFFSET "uniform vec4 offset;\n"
-#else
-#define GLSL_OFFSET "in vec4 offset;\n"
+	// Define for linux
 #endif
 
 using namespace std;
 
 CShader *CShader::m_pInstance = NULL;
 
-const GLchar * const CShader::m_vertCode =
-GLSL_VERSION
+const GLchar * CShader::m_vertCode = NULL;
+const GLchar * CShader::m_fragCode = NULL;
+
+CShader::CShader()
+	: m_program(0)
+{
+	if (__OLD_GL) {
+		m_vertCode = 
+"#version 130\n"
 "uniform mat4 mvp;\n"
 "uniform bool isBlock;\n"
-GLSL_OFFSET
+"uniform vec4 offset;\n"
 "in vec4 position;\n"
 "in vec4 color;\n"
 "out vec4 vertexColor;\n"
@@ -60,18 +61,40 @@ GLSL_OFFSET
 "   }\n"
 "   vertexColor = color;\n"
 "}\n";
-
-const GLchar * const CShader::m_fragCode =
-GLSL_VERSION
+		m_fragCode =
+"#version 130\n"
 "in vec4 vertexColor;\n"
 "void main()\n"
 "{\n"
 "   gl_FragColor = vertexColor;\n"
 "}\n";
+	} else {
+		m_vertCode =
+"#version 130\n"
+"uniform mat4 mvp;\n"
+"uniform bool isBlock;\n"
+"in vec4 offset;\n"
+"in vec4 position;\n"
+"in vec4 color;\n"
+"out vec4 vertexColor;\n"
+"void main()\n"
+"{\n"
+"   if (isBlock) {\n"
+"      gl_Position = mvp * (position + offset);\n"
+"   } else {\n"
+"      gl_Position = mvp * position;\n"
+"   }\n"
+"   vertexColor = color;\n"
+"}\n";
+		m_fragCode =
+"#version 130\n"
+"in vec4 vertexColor;\n"
+"void main()\n"
+"{\n"
+"   gl_FragColor = vertexColor;\n"
+"}\n";
+	}
 
-CShader::CShader()
-	: m_program(0)
-{
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
 	glCullFace(GL_BACK);

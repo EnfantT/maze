@@ -1,6 +1,8 @@
 #include <iostream>
 
 #include "cgmath.h"
+
+#include "CMisc.h"
 #include "CMovable.h"
 #include "CModel.h"
 

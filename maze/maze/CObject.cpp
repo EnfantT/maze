@@ -1,4 +1,6 @@
 #include <iostream>
+
+#include "CMisc.h"
 #include "CObject.h"
 
 using namespace std;

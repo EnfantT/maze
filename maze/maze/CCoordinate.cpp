@@ -4,6 +4,8 @@
 #include "GLFW/glfw3.h"
 
 #include "cgmath.h"
+
+#include "CMisc.h"
 #include "CObject.h"
 #include "CShader.h"
 #include "CCoordinate.h"
@@ -11,7 +13,6 @@
 #include "CModel.h"
 #include "CPerspective.h"
 #include "CView.h"
-#include "CMisc.h"
 
 using namespace std;
 

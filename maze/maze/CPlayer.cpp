@@ -5,6 +5,7 @@
 
 #include "cgmath.h"
 
+#include "CMisc.h"
 #include "CObject.h"
 #include "CMovable.h"
 #include "CVertices.h"
@@ -13,7 +14,6 @@
 #include "CPerspective.h"
 #include "CModel.h"
 #include "CView.h"
-#include "CMisc.h"
 
 using namespace std;
 
@@ -61,13 +61,8 @@ int CPlayer::Render(void)
 	StatusPrint();
 
 	// Drawing a player
-#if !defined(_OLD_GL)
 	glDrawElements(GL_TRIANGLE_STRIP, 17, GL_UNSIGNED_INT, (void *)(18 * sizeof(GLuint)));
 	StatusPrint();
-#else
-	glDrawElements(GL_TRIANGLE_STRIP, 17, GL_UNSIGNED_INT, (void *)(18 * sizeof(GLuint)));
-	StatusPrint();
-#endif	
 
 	return 0;
 }

@@ -12,6 +12,7 @@
 
 #include "cgmath.h"
 
+#include "CMisc.h"
 #include "CObject.h"
 #include "CVertices.h"
 #include "CShader.h"
@@ -20,7 +21,6 @@
 #include "CModel.h"
 #include "CPerspective.h"
 #include "CView.h"
-#include "CMisc.h"
 
 using namespace std;
 
@@ -103,28 +103,28 @@ void CBlock::Destroy(void)
 
 int CBlock::Load(void)
 {
-#if !defined(_OLD_GL)
-	m_offsetId = glGetAttribLocation(CShader::GetInstance()->Program(), "offset");
-	cout << "offset index: " << m_offsetId << endl;
-	if (m_offsetId >= 0)
-		glEnableVertexAttribArray(m_offsetId);
-	CVertices::GetInstance()->BindVAO();
+	if (__OLD_GL) {
+		m_offsetId = glGetUniformLocation(CShader::GetInstance()->Program(), "offset");
+		cout << "offset index: " << m_offsetId << endl;
+	} else {
+		m_offsetId = glGetAttribLocation(CShader::GetInstance()->Program(), "offset");
+		cout << "offset index: " << m_offsetId << endl;
+		if (m_offsetId >= 0)
+			glEnableVertexAttribArray(m_offsetId);
+		CVertices::GetInstance()->BindVAO();
 
-	glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-	StatusPrint();
-	glBufferData(GL_ARRAY_BUFFER, sizeof(*m_offset) * m_iCount, m_offset, GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+		StatusPrint();
+		glBufferData(GL_ARRAY_BUFFER, sizeof(*m_offset) * m_iCount, m_offset, GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	glVertexAttribPointer(m_offsetId, 4, GL_FLOAT, GL_FALSE,
-		sizeof(float) * 4,
-		0);
+		glVertexAttribPointer(m_offsetId, 4, GL_FLOAT, GL_FALSE,
+			sizeof(float) * 4,
+			0);
 
-	glVertexAttribDivisor(m_offsetId, 1);
-	CVertices::GetInstance()->UnbindVAO();
-#else
-	m_offsetId = glGetUniformLocation(CShader::GetInstance()->Program(), "offset");
-	cout << "offset index: " << m_offsetId << endl;
-#endif
+		glVertexAttribDivisor(m_offsetId, 1);
+		CVertices::GetInstance()->UnbindVAO();
+	}
 
 	m_isBlockId = glGetUniformLocation(CShader::GetInstance()->Program(), "isBlock");
 	cout << "isBlock index: " << m_isBlockId << endl;
@@ -152,18 +152,18 @@ int CBlock::Render(void)
 	glUniform1i(m_isBlockId, 1);
 
 	// Drawing blocks
-#if !defined(_OLD_GL)
-	glDrawElementsInstanced(GL_TRIANGLE_STRIP, 17, GL_UNSIGNED_INT, 0, m_iCount);
-	StatusPrint();
-#else
-	int i;
+	if (__OLD_GL) {
+		int i;
 
-	for (i = 0; i < m_iCount; i++) {
-		UpdateOffset(i);
-		glDrawElements(GL_TRIANGLE_STRIP, 17, GL_UNSIGNED_INT, 0);
+		for (i = 0; i < m_iCount; i++) {
+			UpdateOffset(i);
+			glDrawElements(GL_TRIANGLE_STRIP, 17, GL_UNSIGNED_INT, 0);
+			StatusPrint();
+		}
+	} else {
+		glDrawElementsInstanced(GL_TRIANGLE_STRIP, 17, GL_UNSIGNED_INT, 0, m_iCount);
 		StatusPrint();
 	}
-#endif
 	glUniform1i(m_isBlockId, 0);
 
 	return 0;

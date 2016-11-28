@@ -4,9 +4,9 @@
 
 #include "cgmath.h"
 
+#include "CMisc.h"
 #include "CShader.h"
 #include "CVertices.h"
-#include "CMisc.h"
 
 using namespace std;
 
@@ -84,13 +84,13 @@ CVertices *CVertices::m_instance = NULL;
 
 CVertices::CVertices(void)
 {
-#if !defined(_OLD_GL)
-	glEnable(GL_PRIMITIVE_RESTART);
-	glPrimitiveRestartIndex(0xFFFFFFFF);
-#else
-	glEnable(GL_PRIMITIVE_RESTART_FIXED_INDEX);
-	StatusPrint();
-#endif
+	if (__OLD_GL) {
+		glEnable(GL_PRIMITIVE_RESTART_FIXED_INDEX);
+		StatusPrint();
+	} else {
+		glEnable(GL_PRIMITIVE_RESTART);
+		glPrimitiveRestartIndex(0xFFFFFFFF);
+	}
 
 	glGenVertexArrays(1, &m_VAO);
 	glGenBuffers(MAX, m_VBO);

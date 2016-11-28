@@ -5,6 +5,7 @@
 
 #include "cgmath.h"
 
+#include "CMisc.h"
 #include "CObject.h"
 #include "CShader.h"
 #include "CEnvironment.h"
@@ -12,7 +13,6 @@
 #include "CModel.h"
 #include "CPerspective.h"
 #include "CView.h"
-#include "CMisc.h"
 
 using namespace std;
 

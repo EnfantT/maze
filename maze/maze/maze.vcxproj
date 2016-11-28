@@ -27,7 +27,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -74,6 +74,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);-D__OLD_GL</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -112,6 +113,7 @@
   <ItemGroup>
     <ClCompile Include="CBlock.cpp" />
     <ClCompile Include="CCoordinate.cpp" />
+    <ClCompile Include="CMisc.cpp" />
     <ClCompile Include="CModel.cpp" />
     <ClCompile Include="CObject.cpp" />
     <ClCompile Include="CPerspective.cpp" />
@@ -130,6 +132,7 @@
     <ClInclude Include="CEnvironment.h" />
     <ClInclude Include="cgmath.h" />
     <ClInclude Include="CMatrix.h" />
+    <ClInclude Include="CMisc.h" />
     <ClInclude Include="CModel.h" />
     <ClInclude Include="CMovable.h" />
     <ClInclude Include="CObject.h" />

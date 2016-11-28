@@ -9,8 +9,8 @@ private:
 	GLint m_mvpId;
 	GLboolean m_mvpUpdated;
 
-	static const char * const m_vertCode;
-	static const char * const m_fragCode;
+	static const char * m_vertCode;
+	static const char * m_fragCode;
 	static CShader *m_pInstance;
 
 	int LoadNCompile(GLenum type, const char *code);
