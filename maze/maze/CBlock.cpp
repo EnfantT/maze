@@ -29,6 +29,7 @@
 using namespace std;
 
 CBlock *CBlock::m_instance = NULL;
+#define MAZE_SIZE 10
 
 CBlock::CBlock(void)
 : m_geometry_updated(true)
@@ -40,19 +41,22 @@ CBlock::CBlock(void)
 	int y;
 	int x;
 
-	char map[][7] = {
-		{ 1, 1, 1, 1, 1, 1, 1, },
-		{ 0, 0, 0, 0, 0, 0, 1, },
-		{ 1, 0, 1, 0, 1, 0, 1, },
-		{ 1, 1, 1, 0, 0, 0, 1, },
-		{ 1, 0, 1, 1, 1, 0, 1, },
-		{ 1, 0, 0, 0, 0, 0, 1, },
-		{ 1, 1, 0, 1, 1, 1, 1, },
+	char map[][MAZE_SIZE] = {
+		{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
+		{ 0, 0, 0, 1, 1, 0, 0, 0, 0, 1 },
+		{ 1, 1, 0, 0, 0, 0, 1, 0, 1, 1 },
+		{ 1, 1, 1, 1, 1, 0, 0, 0, 1, 1 },
+		{ 1, 0, 0, 1, 1, 0, 1, 0, 0, 1 },
+		{ 1, 1, 0, 1, 0, 0, 1, 1, 0, 1 },
+		{ 1, 0, 0, 1, 1, 1, 1, 0, 0, 1 },
+		{ 1, 0, 1, 1, 0, 0, 0, 0, 1, 1 },
+		{ 1, 0, 0, 0, 0, 1, 1, 0, 0, 1 },
+		{ 1, 1, 0, 1, 1, 1, 1, 1, 1, 1 }
 	};
 
 	m_iCount = 0;
-	for (y = 0; y < 7; y++)
-		for (x = 0; x < 7; x++)
+	for (y = 0; y < MAZE_SIZE; y++)
+		for (x = 0; x < MAZE_SIZE; x++)
 			m_iCount += (map[y][x] == 1);
 
 	m_offset = (vec4 *)malloc(sizeof(*m_offset) * m_iCount);
@@ -62,14 +66,14 @@ CBlock::CBlock(void)
 	}
 
 	i = 0;
-	for (y = 0; y < 7; y++) {
-		for (x = 0; x < 7; x++) {
+	for (y = 0; y < MAZE_SIZE; y++) {
+		for (x = 0; x < MAZE_SIZE; x++) {
 			if (map[y][x] == 0)
 				continue;
 
-			m_offset[i][0] = (x - 3) * (BLOCK_WIDTH * 2);
+			m_offset[i][0] = (x - (MAZE_SIZE / 2)) * (BLOCK_WIDTH * 2);
 			m_offset[i][1] = 0.0f;
-			m_offset[i][2] = (y - 3) * (BLOCK_WIDTH * 2);
+			m_offset[i][2] = (y - (MAZE_SIZE / 2)) * (BLOCK_WIDTH * 2);
 			m_offset[i][3] = 1.0f;
 			i++;
 		}

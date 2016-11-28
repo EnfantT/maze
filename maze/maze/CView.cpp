@@ -79,10 +79,10 @@ void CView::Translate(CMovable::Direction d, float amount)
 		r = m_rotate * vec4(0.0f, 0.0f, -amount, 1.0f);
 		break;
 	case LEFT:
-		r = m_rotate * vec4(amount, 0.0f, 0.0f, 1.0f);
+		r = m_rotate * vec4(-amount, 0.0f, 0.0f, 1.0f);
 		break;
 	case RIGHT:
-		r = m_rotate * vec4(-amount, 0.0f, 0.0f, 1.0f);
+		r = m_rotate * vec4(amount, 0.0f, 0.0f, 1.0f);
 		break;
 	default:
 		break;
