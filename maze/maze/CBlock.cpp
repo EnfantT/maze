@@ -5,6 +5,7 @@
  * This class drawings cubes using "Instancing" method.
  *
  * wall.png: http://orig06.deviantart.net/c87a/f/2013/275/e/5/brick_wall_by_arvin61r58-d6oxnt1.png
+ * wall.jpg: http://thief.washboardabs.net/textures/stone/
  */
 
 #include <iostream>
@@ -136,7 +137,7 @@ int CBlock::Load(void)
 	m_isBlockId = glGetUniformLocation(CShader::GetInstance()->Program(), "isBlock");
 	cout << "isBlock index: " << m_isBlockId << endl;
 
-	m_texImageId = CTexture::GetInstance()->Load("Resources/wall.png");
+	m_texImageId = CTexture::GetInstance()->Load("wall.jpg");
 	if (m_texImageId == 0) {
 		cerr << "Failed to create a texture image id" << endl;
 	}
