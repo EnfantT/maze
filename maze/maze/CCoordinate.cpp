@@ -52,7 +52,7 @@ int CCoordinate::Render(void)
 {
 	mat4 mvp;
 
-	mvp = CPerspective::GetInstance()->Matrix() * CView::GetInstance()->Matrix() * CModel::GetInstance()->Matrix();
+	mvp = CPerspective::GetInstance()->Matrix() * CView::GetInstance()->Matrix();// * CModel::GetInstance()->Matrix();
 
 	glUniformMatrix4fv(CShader::GetInstance()->MVPId(), 1, GL_TRUE, (const GLfloat *)mvp);
 	StatusPrint();
