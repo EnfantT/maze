@@ -1,10 +1,10 @@
 #include <iostream>
-#include <unistd.h>
-
-#include <glad/glad.h>
+#include "glad/glad.h"
 
 #include "cgmath.h"
 #include "stb_image.h"
+
+#include "CMisc.h"
 #include "CTexture.h"
 
 using namespace std;
@@ -47,11 +47,6 @@ GLuint CTexture::Load(const char *filename)
 	int comp;
 	GLuint texId;
 
-	if (access(filename, F_OK) != 0) {
-		cerr << "file not accessible" << endl;
-		return 0;
-	}
-
 	// load an image
 	image = stbi_load(filename, &width, &height, &comp, 0);
 	if (!image) {
@@ -65,6 +60,7 @@ GLuint CTexture::Load(const char *filename)
 	glGenTextures(1, &texId);
 	glBindTexture(GL_TEXTURE_2D, texId);
 	glTexImage2D(GL_TEXTURE_2D, 0, 3, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+	StatusPrint();
 
 //	for(int k=1, w = width >> 1, h = height >> 1; k < 9; k++, w = w >> 1, h = h >> 1)
 //		glTexImage2D(GL_TEXTURE_2D, k, 3, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);

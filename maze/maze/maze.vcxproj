@@ -27,7 +27,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v120</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -74,7 +74,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);-D__OLD_GL</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_MBCS;%(PreprocessorDefinitions);</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -118,6 +118,7 @@
     <ClCompile Include="CObject.cpp" />
     <ClCompile Include="CPerspective.cpp" />
     <ClCompile Include="CPlayer.cpp" />
+    <ClCompile Include="CTexture.cpp" />
     <ClCompile Include="CUI.cpp" />
     <ClCompile Include="CVertices.cpp" />
     <ClCompile Include="CView.cpp" />
@@ -125,6 +126,7 @@
     <ClCompile Include="maze.cpp" />
     <ClCompile Include="CShader.cpp" />
     <ClCompile Include="CEnvironment.cpp" />
+    <ClCompile Include="stb_image.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CBlock.h" />
@@ -139,9 +141,11 @@
     <ClInclude Include="CPerspective.h" />
     <ClInclude Include="CPlayer.h" />
     <ClInclude Include="CShader.h" />
+    <ClInclude Include="CTexture.h" />
     <ClInclude Include="CUI.h" />
     <ClInclude Include="CVertices.h" />
     <ClInclude Include="CView.h" />
+    <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

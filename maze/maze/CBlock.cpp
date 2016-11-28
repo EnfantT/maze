@@ -110,47 +110,46 @@ int CBlock::Load(void)
 		m_offsetId = glGetUniformLocation(CShader::GetInstance()->Program(), "offset");
 		cout << "offset index: " << m_offsetId << endl;
 	} else {
-		m_offsetId = glGetAttribLocation(CShader::GetInstance()->Program(), "offset");
-		cout << "offset index: " << m_offsetId << endl;
-		if (m_offsetId >= 0)
-			glEnableVertexAttribArray(m_offsetId);
 		CVertices::GetInstance()->BindVAO();
-
 		glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
 		StatusPrint();
+
 		glBufferData(GL_ARRAY_BUFFER, sizeof(*m_offset) * m_iCount, m_offset, GL_STATIC_DRAW);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-		glVertexAttribPointer(m_offsetId, 4, GL_FLOAT, GL_FALSE,
-			sizeof(float) * 4,
-			0);
-
+		m_offsetId = glGetAttribLocation(CShader::GetInstance()->Program(), "offset");
+		cout << "offset index: " << m_offsetId << endl;
+		if (m_offsetId >= 0) {
+			glEnableVertexAttribArray(m_offsetId);
+			glVertexAttribPointer(m_offsetId, 4, GL_FLOAT, GL_FALSE,
+				sizeof(GLfloat) * 4,
+				0);
+		}
+		// note
+		// glVertexAttribDivisor should be called before unmapping the VAO
 		glVertexAttribDivisor(m_offsetId, 1);
+
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		CVertices::GetInstance()->UnbindVAO();
+
 	}
 
 	m_isBlockId = glGetUniformLocation(CShader::GetInstance()->Program(), "isBlock");
 	cout << "isBlock index: " << m_isBlockId << endl;
 
 	m_texImageId = CTexture::GetInstance()->Load("Resources/wall.png");
-	if (m_texImageId == 0)
+	if (m_texImageId == 0) {
 		cerr << "Failed to create a texture image id" << endl;
+	}
+	else {
+		GLint texId; // Texture Sampler 2D
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, m_texImageId);
 
-	GLint texId; // Texture Sampler 2D
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, m_texImageId);
-
-	texId = glGetUniformLocation(CShader::GetInstance()->Program(), "tex");
-	glUniform1i(texId, 0);	// map GL_TEXTURE0
+		texId = glGetUniformLocation(CShader::GetInstance()->Program(), "tex");
+		glUniform1i(texId, 0);	// map GL_TEXTURE0
+	}
 
 	m_loaded = true;
-	return 0;
-}
-
-int CBlock::UpdateOffset(int index)
-{
-	glUniform4f(m_offsetId, m_offset[index].x, m_offset[index].y, m_offset[index].z, m_offset[index].w);
-	StatusPrint();
 	return 0;
 }
 
@@ -170,12 +169,13 @@ int CBlock::Render(void)
 		int i;
 
 		for (i = 0; i < m_iCount; i++) {
-			UpdateOffset(i);
-			glDrawElements(GL_TRIANGLE_STRIP, 17, GL_UNSIGNED_INT, 0);
+			glUniform4f(m_offsetId, m_offset[i].x, m_offset[i].y, m_offset[i].z, m_offset[i].w);
+			StatusPrint();
+			glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 			StatusPrint();
 		}
 	} else {
-		glDrawElementsInstanced(GL_TRIANGLE_STRIP, 17, GL_UNSIGNED_INT, 0, m_iCount);
+		glDrawElementsInstanced(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0, m_iCount);
 		StatusPrint();
 	}
 	glUniform1i(m_isBlockId, 0);

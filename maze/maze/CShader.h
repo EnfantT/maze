@@ -23,7 +23,6 @@ public:
 	void Destroy(void);
 
 	int Load(void);
-	int Map(void);
 
 	GLint MVPId(void);
 	GLuint Program(void);

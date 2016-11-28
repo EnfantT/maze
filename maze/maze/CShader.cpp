@@ -86,6 +86,7 @@ CShader::CShader()
 "uniform mat4 mvp;\n"
 "uniform bool isBlock;\n"
 "in vec4 offset;\n"
+"in vec2 texCoord;\n"
 "in vec4 position;\n"
 "in vec4 color;\n"
 "out vec4 fragColor;\n"
@@ -94,11 +95,13 @@ CShader::CShader()
 "{\n"
 "   if (isBlock) {\n"
 "      gl_Position = mvp * (position + offset);\n"
+"      fragTexCoord = texCoord;\n"
+"      fragColor = vec4(0.0f, 0.0f, 0.0f, 0.0f);\n"
 "   } else {\n"
 "      gl_Position = mvp * position;\n"
+"      fragColor = color;\n"
+"      fragTexCoord = vec2(0.0f, 0.0f);\n"
 "   }\n"
-"   fragTexCoord = texCoord;\n"
-"   fragColor = color;\n"
 "}\n";
 		m_fragCode =
 "#version 130\n"
@@ -178,11 +181,6 @@ int CShader::Load(void)
 	GLint fragShader;
 	GLint status;
 
-	if (m_program != 0) {
-		cerr << "Program is already created" << endl;
-		return -EALREADY;
-	}
-
 	vertShader = LoadNCompile(GL_VERTEX_SHADER, m_vertCode);
 	fragShader = LoadNCompile(GL_FRAGMENT_SHADER, m_fragCode);
 
@@ -208,23 +206,17 @@ int CShader::Load(void)
 		return -EFAULT;
 	}
 
-	return 0;
-}
-
-void CShader::UseProgram(void)
-{
-	glUseProgram(m_program);
-}
-
-
-int CShader::Map(void)
-{
 	m_mvpId = glGetUniformLocation(m_program, "mvp");
 	StatusPrint();
 
 	cout << "m_mvp index: " << m_mvpId << endl;
 
 	return 0;
+}
+
+void CShader::UseProgram(void)
+{
+	glUseProgram(m_program);
 }
 
 GLuint CShader::Program(void)

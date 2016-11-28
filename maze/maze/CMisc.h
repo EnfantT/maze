@@ -2,13 +2,13 @@
 #if !defined(__CMISC_H)
 #define __CMISC_H
 
-#if !defined(__func__)
-#define __func__ "func"
+#ifdef _MSC_VER
+#define __func__ __FUNCTION__
 #endif
 
 #define StatusPrint() do { GLenum status; status = glGetError(); if (status != GL_NO_ERROR) cerr << __func__ << ":" << __LINE__ << ":" << status << endl; } while (0)
 
-#define __OLD_GL	IsGLVersion_3_1()
+#define __OLD_GL	!IsGLVersion_3_1()
 
 class CMisc {
 private:

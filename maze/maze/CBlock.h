@@ -15,8 +15,6 @@ private:
 	bool m_color_updated;
 	bool m_loaded;
 
-	int UpdateOffset(int index = 0);
-
 	CBlock(void);
 	virtual ~CBlock(void);
 

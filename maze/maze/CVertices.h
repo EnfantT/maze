@@ -15,16 +15,15 @@ private:
 	GLuint m_VAO; // Array Object
 	GLuint m_VBO[MAX]; // Buffer Object
 
-	static struct {
+	static const struct VertexInfo {
 		vec3 vertex;
 		union {
 			vec2 uv;
 			vec4 color;
 		};
-	} m_vertices[18];
-	static const GLuint m_indices[50];
+	} m_vertices[26];
+	static const GLuint m_indices[51];
 
-	int UpdateColor(void);
 	int UpdateVertices(void);
 	int UpdateIndices(void);
 	CVertices(void);

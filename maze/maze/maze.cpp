@@ -107,8 +107,6 @@ int main(int argc, char *argv[])
 	coord->Load();
 	env->Load();
 
-	shader->Map();
-
 	ui->AddObject(env);
 	ui->AddObject(block);
 	ui->AddObject(player);
