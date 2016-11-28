@@ -9,8 +9,8 @@ using namespace std;
 CView *CView::m_instance = NULL;
 
 CView::CView(void)
-: m_eye(0.0f, 0.0f, 10.0f)
-, m_at(0.0f, 0.0f, 0.0f)
+: m_eye(0.0f, 0.0f, 0.0f)
+, m_at(0.0f, 0.0f, -1.0f)
 , m_up(0.0f, 1.0f, 0.0f)
 , m_updated(true)
 , m_rotateAxis(0.0f, 0.0f, 0.0f)
@@ -113,7 +113,7 @@ bool CView::Updated(void)
 
 void CView::Rotate(vec3 axis, float angle)
 {
-//	m_at = mat4::rotate(axis, angle) * vec4(m_at.x, m_at.y, m_at.z, 1.0f);
+//	m_at = mat4::rotate(axis, angle) * vec4(m_at.x, m_at.y, m_at.z, 0.0f);
 	m_rotate = mat4::rotate(axis, angle) * m_rotate;
 	cout << "rotate: " << m_at.x << "," << m_at.y << "," << m_at.z << endl;
 	m_updated = true;
