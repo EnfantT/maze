@@ -19,7 +19,7 @@ public:
 	int Render(void);
 	int Load(void);
 
-	virtual void Translate(vec4 vec);
+	virtual void Translate(CMovable::Direction d, float amount);
 	virtual void Rotate(vec3 axis, float angle);
 	virtual void Scale(vec4 scale);
 };

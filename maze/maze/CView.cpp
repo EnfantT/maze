@@ -113,16 +113,31 @@ bool CView::Updated(void)
 
 void CView::Rotate(vec3 axis, float angle)
 {
-//	m_at = mat4::rotate(axis, angle) * vec4(m_at.x, m_at.y, m_at.z, 0.0f);
 	m_rotate = mat4::rotate(axis, angle) * m_rotate;
-	cout << "rotate: " << m_at.x << "," << m_at.y << "," << m_at.z << endl;
 	m_updated = true;
 }
 
-void CView::Translate(vec4 vec)
+void CView::Translate(CMovable::Direction d, float amount)
 {
-//	m_eye = mat4::translate(vec.x, vec.y, vec.z) * vec4(m_eye.x, m_eye.y, m_eye.z, 1.0f);
-	m_translate = mat4::translate(vec.x, vec.y, vec.z) * m_translate;
+	vec4 r;
+	r = m_rotate * vec4(m_at.x, m_at.y, m_at.z, 1.0f);
+	cout << r.x << "," << r.y << "," << r.z << endl;
+	switch (d) {
+	case FRONT:
+		m_translate = mat4::translate(0.0f, 0.0f, 0.5f) * m_translate;
+		break;
+	case BACK:
+		m_translate = mat4::translate(0.0f, 0.0f, -0.5f) * m_translate;
+		break;
+	case LEFT:
+		m_translate = mat4::translate(-0.5f, 0.0f, 0.0f) * m_translate;
+		break;
+	case RIGHT:
+		m_translate = mat4::translate(0.5f, 0.0f, 0.0f) * m_translate;
+		break;
+	default:
+		break;
+	}
 	m_updated = true;
 }
 

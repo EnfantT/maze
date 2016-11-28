@@ -52,9 +52,25 @@ mat4 CModel::Matrix(void)
 	return m_model;
 }
 
-void CModel::Translate(vec4 vec)
+void CModel::Translate(CMovable::Direction d, float amount)
 {
-	m_model = mat4::translate(vec.x, vec.y, vec.z) *m_model;
+	switch (d) {
+	case FRONT:
+		m_model = mat4::translate(0.0f, 0.0f, amount) * m_model;
+		break;
+	case BACK:
+		m_model = mat4::translate(0.0f, 0.0f, -amount) * m_model;
+		break;
+	case LEFT:
+		m_model = mat4::translate(-amount, 0.0f, 0.0f) * m_model;
+		break;
+	case RIGHT:
+		m_model = mat4::translate(amount, 0.0f, 0.0f) * m_model;
+		break;
+	default:
+		break;
+	}
+
 	m_updated = true;
 }
 

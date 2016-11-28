@@ -55,29 +55,17 @@ void CUI::keyCB(GLFWwindow *win, int key, int scancode, int action, int mods)
 			CUI::GetInstance()->SetControlTarget(CModel::GetInstance());
 			cout << "Model" << endl;
 			break;
-		case GLFW_KEY_UP: // Up : Move eye to up side
-			move.x = 0.0f;
-			move.y = 0.0f;
-			move.z = 0.5f;
-			CUI::GetInstance()->ControlTarget()->Translate(move);
+		case GLFW_KEY_UP: // Front : Move eye to up side
+			CUI::GetInstance()->ControlTarget()->Translate(CMovable::Direction::FRONT, 0.5f);
+			break;
+		case GLFW_KEY_DOWN: // Back
+			CUI::GetInstance()->ControlTarget()->Translate(CMovable::Direction::BACK, 0.5f);
 			break;
 		case GLFW_KEY_LEFT: // Left
-			move.x = -0.5f;
-			move.y = 0.0f;
-			move.z = 0.0f;
-			CUI::GetInstance()->ControlTarget()->Translate(move);
+			CUI::GetInstance()->ControlTarget()->Translate(CMovable::Direction::LEFT, 0.5f);
 			break;
 		case GLFW_KEY_RIGHT: // Right
-			move.x = 0.5f;
-			move.y = 0.0f;
-			move.z = 0.0f;
-			CUI::GetInstance()->ControlTarget()->Translate(move);
-			break;
-		case GLFW_KEY_DOWN: // Down
-			move.x = 0.0f;
-			move.y = 0.0f;
-			move.z = -0.5f;
-			CUI::GetInstance()->ControlTarget()->Translate(move);
+			CUI::GetInstance()->ControlTarget()->Translate(CMovable::Direction::RIGHT, 0.5f);
 			break;
 		case GLFW_KEY_Q:
 			CUI::GetInstance()->ControlTarget()->Rotate(vec3(1.0f, 0.0f, 0.0f), PI / 18.0f);

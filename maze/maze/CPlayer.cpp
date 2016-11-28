@@ -77,9 +77,24 @@ int CPlayer::Load(void)
 	return 0;
 }
 
-void CPlayer::Translate(vec4 vec)
+void CPlayer::Translate(CMovable::Direction d, float amount)
 {
-	m_translate = mat4::translate(vec.x, vec.y, vec.z) * m_translate;
+	switch (d) {
+	case FRONT:
+		m_translate = mat4::translate(0.0f, 0.0f, amount) * m_translate;
+		break;
+	case BACK:
+		m_translate = mat4::translate(0.0f, 0.0f, -amount) * m_translate;
+		break;
+	case LEFT:
+		m_translate = mat4::translate(-amount, 0.0f, 0.0f) * m_translate;
+		break;
+	case RIGHT:
+		m_translate = mat4::translate(amount, 0.0f, 0.0f) * m_translate;
+		break;
+	default:
+		break;
+	}
 }
 
 void CPlayer::Rotate(vec3 axis, float angle)
