@@ -77,8 +77,7 @@ const GLuint CVertices::m_indices[] = {
 
 	  12, 13, 0xFFFFFFFF, // (3, 42 - 44) Z axis
 
-	  16, 15, 14, 0xFFFFFFFF, // (4, 45 - 48) Land Triangle Part 1
-	  14, 17, 16, 0xFFFFFFFF, // (4, 48 - 51) Land Triangle Part 2
+	  14, 17, 15, 16, 0xFFFFFFFF, // (4, 45 - 48) Land
 };
 
 CVertices *CVertices::m_instance = NULL;

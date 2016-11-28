@@ -62,7 +62,7 @@ int CEnvironment::Render(void)
 	glUniformMatrix4fv(CShader::GetInstance()->MVPId(), 1, GL_TRUE, (const GLfloat *)mvp);
 	StatusPrint();
 
-	glDrawElements(GL_TRIANGLES, 8, GL_UNSIGNED_INT, (void *)(sizeof(GLuint) * 45));
+	glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_INT, (void *)(sizeof(GLuint) * 45));
 	StatusPrint();
 
 	return 0;
