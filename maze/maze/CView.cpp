@@ -69,24 +69,24 @@ void CView::Rotate(vec3 axis, float angle)
 void CView::Translate(CMovable::Direction d, float amount)
 {
 	vec4 r;
-	r = m_rotate * vec4(m_at.x, m_at.y, m_at.z, 1.0f);
-	cout << r.x << "," << r.y << "," << r.z << endl;
 	switch (d) {
 	case FRONT:
-		m_translate = mat4::translate(0.0f, 0.0f, amount) * m_translate;
+		r = m_rotate * vec4(0.0f, 0.0f, amount, 1.0f);
 		break;
 	case BACK:
-		m_translate = mat4::translate(0.0f, 0.0f, -amount) * m_translate;
+		r = m_rotate * vec4(0.0f, 0.0f, -amount, 1.0f);
 		break;
 	case LEFT:
-		m_translate = mat4::translate(amount, 0.0f, 0.0f) * m_translate;
+		r = m_rotate * vec4(amount, 0.0f, 0.0f, 1.0f);
 		break;
 	case RIGHT:
-		m_translate = mat4::translate(-amount, 0.0f, 0.0f) * m_translate;
+		r = m_rotate * vec4(-amount, 0.0f, 0.0f, 1.0f);
 		break;
 	default:
 		break;
 	}
+	cout << r.x << "," << r.y << "," << r.z << endl;
+	m_translate = mat4::translate(-r.x, -r.y, r.z) * m_translate;
 	m_updated = true;
 }
 
