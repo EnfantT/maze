@@ -17,7 +17,7 @@ CView::CView(void)
 , m_rotateAngle(0.0f)
 {
 	m_rotate.setIdentity();
-	m_translate.setIdentity();
+	m_translate.setTranslate(0.0f, 0.0f, -30.0f);
 }
 
 CView::~CView(void)
