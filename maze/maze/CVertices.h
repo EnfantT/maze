@@ -17,10 +17,7 @@ private:
 
 	static const struct VertexInfo {
 		vec3 vertex;
-		union {
-			vec2 uv;
-			vec4 color;
-		};
+		vec4 color;	// Color(Four elements) and UV (Two elements)
 	} m_vertices[26];
 	static const GLuint m_indices[51];
 

@@ -129,9 +129,7 @@ CUI::CUI(void)
 	}
 
 	glfwSetErrorCallback(errorCB);
-	cout << glfwGetVersionString() << endl;
-	if (atof(glfwGetVersionString()) >= 3.1f)
-		CMisc::EnableVersion_3_1();
+	cout << "glfw Version: " << atof(glfwGetVersionString()) << endl;
 }
 
 CUI::~CUI(void)
@@ -193,6 +191,17 @@ int CUI::CreateContext(int w, int h, const char *title)
 	 * gladLoadGLLoader should be called after glfwMakeContextCurrent
 	 */
 	gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+
+	GLint major;
+	GLint minor;
+
+	glGetIntegerv(GL_MAJOR_VERSION, &major);
+	glGetIntegerv(GL_MINOR_VERSION, &minor);
+
+	if (major >= 3 && minor >= 1)
+		CMisc::EnableVersion_3_1();
+	else
+		cout << "GL Version " << major << "." << minor << endl;
 
 	glViewport(0, 0, 1024, 768);
 	return 0;
