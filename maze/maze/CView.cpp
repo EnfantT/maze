@@ -124,16 +124,16 @@ void CView::Translate(CMovable::Direction d, float amount)
 	cout << r.x << "," << r.y << "," << r.z << endl;
 	switch (d) {
 	case FRONT:
-		m_translate = mat4::translate(0.0f, 0.0f, 0.5f) * m_translate;
+		m_translate = mat4::translate(0.0f, 0.0f, amount) * m_translate;
 		break;
 	case BACK:
-		m_translate = mat4::translate(0.0f, 0.0f, -0.5f) * m_translate;
+		m_translate = mat4::translate(0.0f, 0.0f, -amount) * m_translate;
 		break;
 	case LEFT:
-		m_translate = mat4::translate(-0.5f, 0.0f, 0.0f) * m_translate;
+		m_translate = mat4::translate(amount, 0.0f, 0.0f) * m_translate;
 		break;
 	case RIGHT:
-		m_translate = mat4::translate(0.5f, 0.0f, 0.0f) * m_translate;
+		m_translate = mat4::translate(-amount, 0.0f, 0.0f) * m_translate;
 		break;
 	default:
 		break;
