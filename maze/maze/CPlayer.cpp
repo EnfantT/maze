@@ -62,10 +62,10 @@ int CPlayer::Render(void)
 
 	// Drawing a player
 #if !defined(_OLD_GL)
-	glDrawElements(GL_TRIANGLE_STRIP, 18, GL_UNSIGNED_INT, (void *)(18 * sizeof(GLuint)));
+	glDrawElements(GL_TRIANGLE_STRIP, 17, GL_UNSIGNED_INT, (void *)(18 * sizeof(GLuint)));
 	StatusPrint();
 #else
-	glDrawElements(GL_TRIANGLE_STRIP, 18, GL_UNSIGNED_INT, (void *)(18 * sizeof(GLuint)));
+	glDrawElements(GL_TRIANGLE_STRIP, 17, GL_UNSIGNED_INT, (void *)(18 * sizeof(GLuint)));
 	StatusPrint();
 #endif	
 

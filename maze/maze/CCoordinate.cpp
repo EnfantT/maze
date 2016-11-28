@@ -56,7 +56,7 @@ int CCoordinate::Render(void)
 	glUniformMatrix4fv(CShader::GetInstance()->MVPId(), 1, GL_TRUE, (const GLfloat *)mvp);
 	StatusPrint();
 
-	glDrawElements(GL_LINES, 8, GL_UNSIGNED_INT, (void *)(sizeof(GLfloat) * 36));
+	glDrawElements(GL_LINES, 8, GL_UNSIGNED_INT, (void *)(sizeof(GLuint) * 36));
 	StatusPrint();
 
 	return 0;

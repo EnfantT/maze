@@ -28,10 +28,10 @@ const vec4 CVertices::m_vertices[] = {
 	{ 0.0f, 0.0f, -1000.0f, 1.0f },
 	{ 0.0f, 0.0f, 1000.0f, 1.0f }, // Z axis
 
-	{ 1000.0f, -0.1f, -1000.0f, 1.0f },
-	{ 1000.0f, -0.1f, 1000.0f, 1.0f },
-	{ -1000.0f, -0.1f, 1000.0f, 1.0f },
-	{ -1000.0f, -0.1f, -1000.0f, 1.0f }, // Land
+	{ 100.0f, -BLOCK_WIDTH, -100.0f, 1.0f },
+	{ 100.0f, -BLOCK_WIDTH, 100.0f, 1.0f },
+	{ -100.0f, -BLOCK_WIDTH, 100.0f, 1.0f },
+	{ -100.0f, -BLOCK_WIDTH, -100.0f, 1.0f }, // Land
 };
 
 const vec4 CVertices::m_colors[] = {
@@ -77,7 +77,8 @@ const GLuint CVertices::m_indices[] = {
 
 	  12, 13, 0xFFFFFFFF, // (3, 42 - 44) Z axis
 
-	  14, 15, 16, 17, // (4, 45 - 48) Land
+	  16, 15, 14, 0xFFFFFFFF, // (4, 45 - 48) Land Triangle Part 1
+	  14, 17, 16, 0xFFFFFFFF, // (4, 48 - 51) Land Triangle Part 2
 };
 
 CVertices *CVertices::m_instance = NULL;
@@ -186,10 +187,9 @@ int CVertices::UpdateVertices(void)
 	if (position >= 0) {
 		glEnableVertexAttribArray(position);
 		glVertexAttribPointer(position, 4, GL_FLOAT, GL_FALSE,
-			sizeof(float) * 4,
+			sizeof(GLfloat) * 4,
 			(void *)0);
 	}
-
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	return 0;
@@ -215,7 +215,7 @@ int CVertices::UpdateColor(void)
 	if (color >= 0) {
 		glEnableVertexAttribArray(color);
 		glVertexAttribPointer(color, 4, GL_FLOAT, GL_FALSE,
-			sizeof(float) * 4,
+			sizeof(GLfloat) * 4,
 			(void *)0);
 	}
 

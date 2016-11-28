@@ -16,9 +16,9 @@ private:
 	GLuint m_VAO; // Array Object
 	GLuint m_VBO[MAX]; // Buffer Object
 
-	static const vec4 m_vertices[18];
-	static const vec4 m_colors[18];
-	static const GLuint m_indices[49];
+	static const vec4 m_vertices[19];
+	static const vec4 m_colors[19];
+	static const GLuint m_indices[54];
 
 	int UpdateColor(void);
 	int UpdateVertices(void);
