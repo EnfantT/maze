@@ -3,6 +3,8 @@
  * This class construct the MAZE.
  * Vertex list of a cube is stored in CVertices.
  * This class drawings cubes using "Instancing" method.
+ *
+ * wall.png: http://orig06.deviantart.net/c87a/f/2013/275/e/5/brick_wall_by_arvin61r58-d6oxnt1.png
  */
 
 #include <iostream>
@@ -21,6 +23,7 @@
 #include "CModel.h"
 #include "CPerspective.h"
 #include "CView.h"
+#include "CTexture.h"
 
 using namespace std;
 
@@ -128,6 +131,17 @@ int CBlock::Load(void)
 
 	m_isBlockId = glGetUniformLocation(CShader::GetInstance()->Program(), "isBlock");
 	cout << "isBlock index: " << m_isBlockId << endl;
+
+	m_texImageId = CTexture::GetInstance()->Load("Resources/wall.png");
+	if (m_texImageId == 0)
+		cerr << "Failed to create a texture image id" << endl;
+
+	GLint texId; // Texture Sampler 2D
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, m_texImageId);
+
+	texId = glGetUniformLocation(CShader::GetInstance()->Program(), "tex");
+	glUniform1i(texId, 0);	// map GL_TEXTURE0
 
 	m_loaded = true;
 	return 0;

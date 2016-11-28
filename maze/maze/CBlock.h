@@ -6,6 +6,7 @@ class CBlock : public CObject {
 private:
 	vec4 *m_offset;
 	GLuint m_VBO; // Vertex Buffer Object
+	GLuint m_texImageId;
 	GLint m_offsetId;
 	GLint m_isBlockId;
 	int m_iCount;

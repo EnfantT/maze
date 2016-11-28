@@ -10,6 +10,7 @@ private:
 	static CTexture *m_instance;
 public:
 	static CTexture *GetInstance(void);
+	GLuint Load(const char *filename);
 };
 
 #endif

@@ -11,53 +11,80 @@
 using namespace std;
 
 const vec4 CVertices::m_vertices[] = {
-	{ BLOCK_WIDTH,  BLOCK_WIDTH,  BLOCK_WIDTH, 1.0f },
-	{ -BLOCK_WIDTH,  BLOCK_WIDTH,  BLOCK_WIDTH, 1.0f },
-	{ -BLOCK_WIDTH, -BLOCK_WIDTH,  BLOCK_WIDTH, 1.0f },
-	{ BLOCK_WIDTH, -BLOCK_WIDTH,  BLOCK_WIDTH, 1.0f },
-	
-	{ BLOCK_WIDTH, -BLOCK_WIDTH, -BLOCK_WIDTH, 1.0f },
-	{ BLOCK_WIDTH,  BLOCK_WIDTH, -BLOCK_WIDTH, 1.0f },
-	{ -BLOCK_WIDTH,  BLOCK_WIDTH, -BLOCK_WIDTH, 1.0f },
-	{ -BLOCK_WIDTH, -BLOCK_WIDTH, -BLOCK_WIDTH, 1.0f }, // Vertices for a Cube modeling.
+	{
+		.vertex = { BLOCK_WIDTH,  BLOCK_WIDTH,  BLOCK_WIDTH },
+		.uv = { 1.0f, 1.0f },
+	},
+	{
+		.vertex = { -BLOCK_WIDTH,  BLOCK_WIDTH,  BLOCK_WIDTH },
+		.uv = { 0.0f, 1.0f },
+	},
+	{
+		.vertex = { -BLOCK_WIDTH, -BLOCK_WIDTH,  BLOCK_WIDTH },
+		.uv = { 0.0f, 0.0f },
+	},
+	{
+		.vertex = { BLOCK_WIDTH, -BLOCK_WIDTH,  BLOCK_WIDTH },
+		.uv = { 1.0f, 0.0f },	// 5 * 4 = 20
+	},
 
-	{ -1000.0f, 0.0f, 0.0f, 1.0f },
-	{ 1000.0f, 0.0f, 0.0f, 1.0f }, // X axis
-	{ 0.0f, -1000.0f, 0.0f, 1.0f },
-	{ 0.0f, 1000.0f, 0.0f, 1.0f }, // Y axis
-	{ 0.0f, 0.0f, -1000.0f, 1.0f },
-	{ 0.0f, 0.0f, 1000.0f, 1.0f }, // Z axis
+	{
+		.vertex = { BLOCK_WIDTH, -BLOCK_WIDTH, -BLOCK_WIDTH },
+		.uv = { 0.0f, 0.0f },
+	},
+	{
+		.vertex = { BLOCK_WIDTH,  BLOCK_WIDTH, -BLOCK_WIDTH },
+		.color = { 1.0f, 1.0f },
+	},
+	{
+		.vertex = { -BLOCK_WIDTH,  BLOCK_WIDTH, -BLOCK_WIDTH },
+		.color = { 0.0f, 1.0f },
+	},
+	{
+		.vertex = { -BLOCK_WIDTH, -BLOCK_WIDTH, -BLOCK_WIDTH }, // Vertices for a Cube modeling.
+		.color = { 0.0f, 0.0f },
+	},
 
-	{ 100.0f, -BLOCK_WIDTH, -100.0f, 1.0f },
-	{ 100.0f, -BLOCK_WIDTH, 100.0f, 1.0f },
-	{ -100.0f, -BLOCK_WIDTH, 100.0f, 1.0f },
-	{ -100.0f, -BLOCK_WIDTH, -100.0f, 1.0f }, // Land
-};
-
-const vec4 CVertices::m_colors[] = {
-	{ 1.0f, 0.0f, 0.0f, 1.0f },
-	{ 1.0f, 0.0f, 0.0f, 1.0f },
-	{ 1.0f, 0.0f, 0.0f, 1.0f },
-	{ 1.0f, 0.0f, 0.0f, 1.0f },
-	{ 1.0f, 1.0f, 1.0f, 1.0f },
-	{ 1.0f, 1.0f, 1.0f, 1.0f },
-	{ 1.0f, 1.0f, 1.0f, 1.0f },
-	{ 1.0f, 1.0f, 1.0f, 1.0f },
-
-	{ 0.0f, 1.0f, 0.0f, 1.0f },
-	{ 0.0f, 1.0f, 0.0f, 1.0f }, // X axis
-
-	{ 0.0f, 0.0f, 1.0f, 1.0f },
-	{ 0.0f, 0.0f, 1.0f, 1.0f }, // Y axis
-
-	{ 0.0f, 1.0f, 1.0f, 1.0f },
-	{ 0.0f, 1.0f, 1.0f, 1.0f }, // Z axis
-
-	{ 0.9f, 0.8f, 0.7f, 1.0f },
-	{ 0.9f, 0.8f, 0.7f, 1.0f },
-	{ 0.9f, 0.8f, 0.7f, 1.0f },
-	{ 0.9f, 0.8f, 0.7f, 1.0f }, // Land
-
+	{
+		.vertex = { -1000.0f, 0.0f, 0.0f },
+		.color = { 0.0f, 1.0f, 0.0f, 1.0f },
+	},
+	{
+		.vertex = { 1000.0f, 0.0f, 0.0f }, // X axis
+		.color = { 0.0f, 1.0f, 0.0f, 1.0f }, // X axis
+	},
+	{
+		.vertex = { 0.0f, -1000.0f, 0.0f },
+		.color = { 0.0f, 0.0f, 1.0f, 1.0f },
+	},
+	{
+		.vertex = { 0.0f, 1000.0f, 0.0f }, // Y axis
+		.color = { 0.0f, 0.0f, 1.0f, 1.0f }, // Y axis
+	},
+	{
+		.vertex = { 0.0f, 0.0f, -1000.0f },
+		.color = { 0.0f, 1.0f, 1.0f, 1.0f },
+	},
+	{
+		.vertex = { 0.0f, 0.0f, 1000.0f }, // Z axis
+		.color = { 0.0f, 1.0f, 1.0f, 1.0f }, // Z axis
+	},
+	{
+		.vertex = { 100.0f, -BLOCK_WIDTH, -100.0f },
+		.color = { 0.9f, 0.8f, 0.7f, 1.0f },
+	},
+	{
+		.vertex = { 100.0f, -BLOCK_WIDTH, 100.0f },
+		.color = { 0.9f, 0.8f, 0.7f, 1.0f },
+	},
+	{
+		.vertex = { -100.0f, -BLOCK_WIDTH, 100.0f },
+		.color = { 0.9f, 0.8f, 0.7f, 1.0f },
+	},
+	{
+		.vertex = { -100.0f, -BLOCK_WIDTH, -100.0f }, // Land
+		.color = { 0.9f, 0.8f, 0.7f, 1.0f }, // Land
+	},
 };
 
 const GLuint CVertices::m_indices[] = {
@@ -170,6 +197,7 @@ int CVertices::UpdateIndices(void)
 int CVertices::UpdateVertices(void)
 {
 	GLint position;
+	GLint color;
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_VBO[VERTEX]);
 	/**
@@ -181,14 +209,25 @@ int CVertices::UpdateVertices(void)
 	* So we do not use the dynamic_draw from here.
 	*/
 	glBufferData(GL_ARRAY_BUFFER, sizeof(m_vertices), m_vertices, GL_STATIC_DRAW);
+
 	position = glGetAttribLocation(CShader::GetInstance()->Program(), "position");
 	cout << "position index: " << position << endl;
 	if (position >= 0) {
 		glEnableVertexAttribArray(position);
-		glVertexAttribPointer(position, 4, GL_FLOAT, GL_FALSE,
-			sizeof(GLfloat) * 4,
+		glVertexAttribPointer(position, 3, GL_FLOAT, GL_FALSE,
+			sizeof(*m_vertices),
 			(void *)0);
 	}
+
+	color = glGetAttribLocation(CShader::GetInstance()->Program(), "texCoord");
+	cout << "color index: " << color << endl;
+	if (color >= 0) {
+		glEnableVertexAttribArray(color);
+		glVertexAttribPointer(color, 2, GL_FLOAT, GL_TRUE,
+			sizeof(*m_vertices),
+			(void *)sizeof(m_vertices->vertex));
+	}
+
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	return 0;

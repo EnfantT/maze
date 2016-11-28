@@ -8,16 +8,20 @@ class CVertices {
 private:
 	enum VBO {
 		VERTEX = 0x00,
-		COLOR = 0x01,
-		INDICES = 0x02,
-		MAX = 0x03
+		INDICES = 0x01,
+		MAX = 0x02
 	};
 
 	GLuint m_VAO; // Array Object
 	GLuint m_VBO[MAX]; // Buffer Object
 
-	static const vec4 m_vertices[18];
-	static const vec4 m_colors[18];
+	static struct {
+		vec3 vertex;
+		union {
+			vec2 uv;
+			vec4 color;
+		};
+	} m_vertices[18];
 	static const GLuint m_indices[50];
 
 	int UpdateColor(void);
