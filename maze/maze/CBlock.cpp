@@ -59,9 +59,11 @@ CBlock::CBlock(void)
 		for (x = 0; x < MAZE_SIZE; x++)
 			m_iCount += (map[y][x] == 1);
 
-	m_offset = (vec4 *)malloc(sizeof(*m_offset) * m_iCount);
-	if (m_offset == NULL) {
-		cerr << "Failed to allocate heap for map" << endl;
+	try {
+		m_offset = new vec4[m_iCount];
+	} catch (...) {
+		cerr << "Failed to allocate m_offset" << endl;
+		m_iCount = 1;
 		return;
 	}
 
@@ -85,7 +87,7 @@ CBlock::CBlock(void)
 
 CBlock::~CBlock(void)
 {
-	free(m_offset);
+	delete[] m_offset;
 	glDeleteBuffers(1, &m_VBO);
 }
 

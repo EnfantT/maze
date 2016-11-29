@@ -18,6 +18,11 @@ private:
 	virtual ~CMisc(void);
 
 public:
+	static const char * const m_oldVertexShaderFile;
+	static const char * const m_oldFragmentShaderFile;
+	static const char * const m_vertexShaderFile;
+	static const char * const m_fragmentShaderFile;
+
 	static bool IsGLVersion_3_1(void);
 	static void EnableVersion_3_1(void);
 };

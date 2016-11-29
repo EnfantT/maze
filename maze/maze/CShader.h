@@ -9,11 +9,10 @@ private:
 	GLint m_mvpId;
 	GLboolean m_mvpUpdated;
 
-	static const char * m_vertCode;
-	static const char * m_fragCode;
 	static CShader *m_pInstance;
 
-	int LoadNCompile(GLenum type, const char *code);
+	char *ReadFile(const char *filename);
+	GLuint LoadNCompile(GLenum type, const char *code);
 
 	CShader(void);
 	virtual ~CShader(void);
@@ -22,7 +21,7 @@ public:
 	static CShader *GetInstance(void);
 	void Destroy(void);
 
-	int Load(void);
+	int Load(const char *vFile = NULL, const char *fFile = NULL);
 
 	GLint MVPId(void);
 	GLuint Program(void);

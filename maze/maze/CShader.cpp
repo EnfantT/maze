@@ -14,6 +14,8 @@ OpenGL Version	GLSL Version	#version tag
  4.5 ...
 */
 #include <iostream>
+#include <fstream>
+
 #include <errno.h>
 
 #include "glad/glad.h"
@@ -37,88 +39,9 @@ using namespace std;
 
 CShader *CShader::m_pInstance = NULL;
 
-const GLchar * CShader::m_vertCode = NULL;
-const GLchar * CShader::m_fragCode = NULL;
-
 CShader::CShader()
 	: m_program(0)
 {
-	if (__OLD_GL) {
-		m_vertCode = 
-"#version 130\n"
-"uniform mat4 mvp;\n"
-"uniform bool isBlock;\n"
-"uniform vec4 offset;\n"
-"in vec2 texCoord;\n"
-"in vec4 position;\n"
-"in vec4 color;\n"
-"out vec4 fragColor;\n"
-"out vec2 fragTexCoord;\n"
-"void main()\n"
-"{\n"
-"   if (isBlock) {\n"
-"      gl_Position = mvp * (position + offset);\n"
-"      fragTexCoord = texCoord;\n"
-"      fragColor = vec4(0.0f, 0.0f, 0.0f, 0.0f);\n"
-"   } else {\n"
-"      gl_Position = mvp * position;\n"
-"      fragColor = color;\n"
-"      fragTexCoord = vec2(0.0f, 0.0f);\n"
-"   }\n"
-"}\n";
-		m_fragCode =
-"#version 130\n"
-"in vec4 fragColor;\n"
-"in vec2 fragTexCoord;\n"
-"uniform sampler2D tex;\n"
-"uniform bool isBlock;\n"
-"void main()\n"
-"{\n"
-"   if (isBlock) {\n"
-"      gl_FragColor = texture2D(tex, fragTexCoord);\n"
-"   } else {\n"
-"      gl_FragColor = fragColor;\n"
-"   }\n"
-"}\n";
-	} else {
-		m_vertCode =
-"#version 130\n"
-"uniform mat4 mvp;\n"
-"uniform bool isBlock;\n"
-"in vec4 offset;\n"
-"in vec2 texCoord;\n"
-"in vec4 position;\n"
-"in vec4 color;\n"
-"out vec4 fragColor;\n"
-"out vec2 fragTexCoord;\n"
-"void main()\n"
-"{\n"
-"   if (isBlock) {\n"
-"      gl_Position = mvp * (position + offset);\n"
-"      fragTexCoord = texCoord;\n"
-"      fragColor = vec4(0.0f, 0.0f, 0.0f, 0.0f);\n"
-"   } else {\n"
-"      gl_Position = mvp * position;\n"
-"      fragColor = color;\n"
-"      fragTexCoord = vec2(0.0f, 0.0f);\n"
-"   }\n"
-"}\n";
-		m_fragCode =
-"#version 130\n"
-"in vec4 fragColor;\n"
-"in vec2 fragTexCoord;\n"
-"uniform sampler2D tex;\n"
-"uniform bool isBlock;\n"
-"void main()\n"
-"{\n"
-"   if (isBlock) {\n"
-"      gl_FragColor = texture2D(tex, fragTexCoord);\n"
-"   } else {\n"
-"      gl_FragColor = fragColor;\n"
-"   }\n"
-"}\n";
-	}
-
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
 	glCullFace(GL_BACK);
@@ -154,14 +77,24 @@ CShader *CShader::GetInstance(void)
 	return m_pInstance;
 }
 
-int CShader::LoadNCompile(GLenum type, const char *code)
+GLuint CShader::LoadNCompile(GLenum type, const char *filename)
 {
+	char *code;
 	GLuint shader;
 	GLint status;
+
+	code = ReadFile(filename);
+	if (!code)
+		return 0u;
+
+	cout << "begin" << endl;
+	cout << code << endl;
+	cout << "end" << endl;
 
 	shader = glCreateShader(type);
 	glShaderSource(shader, 1, &code, NULL);
 	glCompileShader(shader);
+	delete[] code;
 
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
 	if (status == GL_FALSE) {
@@ -175,14 +108,52 @@ int CShader::LoadNCompile(GLenum type, const char *code)
 	return shader;
 }
 
-int CShader::Load(void)
+char *CShader::ReadFile(const char *filename)
+{
+	char *code = NULL;
+	ifstream file;
+	streampos size;
+
+	file.open(filename);
+	if (!file.is_open())
+		return NULL;
+
+	file.seekg(0, ios::end);
+
+	size = file.tellg();
+	if (!size) {
+		file.close();
+		return NULL;
+	}
+
+	try {
+		code = new char[size];
+	} catch (...) {
+		cerr << "Failed to allocate code" << endl;
+		return NULL;
+	}
+
+	cout << "name " << filename << " size " << size << endl;
+
+	file.seekg(0, ios::beg);
+	file.read(code, size);
+	file.close();
+	return code;
+}
+
+int CShader::Load(const char *vFile, const char *fFile)
 {
 	GLint vertShader;
 	GLint fragShader;
 	GLint status;
 
-	vertShader = LoadNCompile(GL_VERTEX_SHADER, m_vertCode);
-	fragShader = LoadNCompile(GL_FRAGMENT_SHADER, m_fragCode);
+	if (!vFile || !fFile) {
+		cerr << "Invalid parameter " << vFile << "," << fFile << endl;
+		return -EINVAL;
+	}
+
+	vertShader = LoadNCompile(GL_VERTEX_SHADER, vFile);
+	fragShader = LoadNCompile(GL_FRAGMENT_SHADER, fFile);
 
 	m_program = glCreateProgram();
 	if (m_program == 0)
@@ -208,7 +179,6 @@ int CShader::Load(void)
 
 	m_mvpId = glGetUniformLocation(m_program, "mvp");
 	StatusPrint();
-
 	cout << "m_mvp index: " << m_mvpId << endl;
 
 	return 0;

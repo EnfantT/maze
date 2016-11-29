@@ -99,7 +99,10 @@ int main(int argc, char *argv[])
 	/**
 	 * Shader must be loaded first.
 	 */
-	shader->Load();
+	if (__OLD_GL)
+		shader->Load(CMisc::m_oldVertexShaderFile, CMisc::m_oldFragmentShaderFile);
+	else
+		shader->Load(CMisc::m_vertexShaderFile, CMisc::m_fragmentShaderFile);
 
 	vertices->Load();
 	block->Load();

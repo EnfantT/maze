@@ -54,16 +54,10 @@ GLuint CTexture::Load(const char *filename)
 		return 0;
 	}
 
-//	image = (unsigned char*) malloc( sizeof(unsigned char)*width*height*comp );
-//	for( int y=0, stride=width*comp; y < height; y++ ) memcpy( image+(height-1-y)*stride, image+y*stride, stride ); // vertical flip
-
 	glGenTextures(1, &texId);
 	glBindTexture(GL_TEXTURE_2D, texId);
 	glTexImage2D(GL_TEXTURE_2D, 0, 3, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
 	StatusPrint();
-
-//	for(int k=1, w = width >> 1, h = height >> 1; k < 9; k++, w = w >> 1, h = h >> 1)
-//		glTexImage2D(GL_TEXTURE_2D, k, 3, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 
 	glGenerateMipmap(GL_TEXTURE_2D);
 
