@@ -114,11 +114,9 @@ char *CShader::ReadFile(const char *filename)
 	ifstream file;
 	streampos size;
 
-	file.open(filename);
+	file.open(filename, ios::ate);
 	if (!file.is_open())
 		return NULL;
-
-	file.seekg(0, ios::end);
 
 	size = file.tellg();
 	if (!size) {
@@ -130,6 +128,7 @@ char *CShader::ReadFile(const char *filename)
 		code = new char[size];
 	} catch (...) {
 		cerr << "Failed to allocate code" << endl;
+		file.close();
 		return NULL;
 	}
 
@@ -138,6 +137,7 @@ char *CShader::ReadFile(const char *filename)
 	file.seekg(0, ios::beg);
 	file.read(code, size);
 	file.close();
+
 	return code;
 }
 

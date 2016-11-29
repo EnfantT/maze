@@ -7,6 +7,7 @@ in vec4 position;
 in vec4 color;
 out vec4 fragColor;
 out vec2 fragTexCoord;
+
 void main()
 {
 	if (isBlock) {
