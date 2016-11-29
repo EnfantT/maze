@@ -9,7 +9,12 @@ class CUI {
 private:
 	static void errorCB(int error, const char *description);
 	static void keyCB(GLFWwindow *win, int key, int scancode, int action, int mods);
+
+	static float m_ptrX;
+	static float m_ptrY;
+	static bool m_ptrMoved;
 	static void ptrCB(GLFWwindow *win, double x, double y);
+
 	GLFWwindow *m_win;
 	CObject *m_objectList;
 	CMovable *m_target;

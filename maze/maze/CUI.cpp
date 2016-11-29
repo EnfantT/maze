@@ -1,6 +1,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include <errno.h>
+#include <math.h>
 
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
@@ -20,6 +21,9 @@
 using namespace std;
 
 CUI *CUI::m_instance = NULL;
+float CUI::m_ptrX = 0.0f;
+float CUI::m_ptrY = 0.0f;
+bool CUI::m_ptrMoved = false;
 
 void CUI::errorCB(int error, const char *description)
 {
@@ -28,6 +32,42 @@ void CUI::errorCB(int error, const char *description)
 
 void CUI::ptrCB(GLFWwindow *win, double x, double y)
 {
+	float xd;
+	float yd;
+
+	if (m_ptrMoved == false) {
+		m_ptrX = x;
+		m_ptrY = y;
+		m_ptrMoved = true;
+		return;
+	}
+
+	if (CUI::GetInstance()->ControlTarget() != CView::GetInstance())
+		return;
+
+	xd = (x - m_ptrX);
+	yd = (y - m_ptrY);
+
+	if (fabs(xd) >= 1.0f) {
+		if (xd < 0.0f)
+			xd = -(180.0f - fabs(xd));
+		else
+			xd = 180.0f - xd;
+
+		CUI::GetInstance()->ControlTarget()->Rotate(vec3(0.0f, 1.0f, 0.0f), PI / xd);
+	}
+
+	if (fabs(yd) >= 1.0f) {
+		if (yd < 0.0f)
+			yd = -(180.0f - fabs(yd));
+		else
+			yd = 180.0f - yd;
+
+		// CUI::GetInstance()->ControlTarget()->Rotate(vec3(1.0f, 0.0f, 0.0f), PI / yd);
+	}
+	
+	m_ptrX = x;
+	m_ptrY = y;
 }
 
 void resizeCB(GLFWwindow* win, int width, int height)
@@ -76,7 +116,6 @@ void CUI::keyCB(GLFWwindow *win, int key, int scancode, int action, int mods)
 		case GLFW_KEY_A:
 			CUI::GetInstance()->ControlTarget()->Rotate(vec3(1.0f, 0.0f, 0.0f), -PI / 18.0f);
 			break;
-
 		case GLFW_KEY_W:
 			CUI::GetInstance()->ControlTarget()->Rotate(vec3(0.0f, 1.0f, 0.0f), PI / 18.0f);
 			break;
