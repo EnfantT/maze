@@ -125,14 +125,14 @@ char *CShader::ReadFile(const char *filename)
 	}
 
 	try {
-		code = new char[(size_t)size];
+		code = new char[(size_t)size + 1];
 	} catch (...) {
 		cerr << "Failed to allocate code" << endl;
 		file.close();
 		return NULL;
 	}
 	
-	memset(code, 0, (size_t)size);
+	memset(code, 0, (size_t)size + 1);
 
 	cout << "name " << filename << " size " << size << endl;
 
