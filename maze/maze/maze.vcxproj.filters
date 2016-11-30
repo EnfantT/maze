@@ -117,4 +117,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="maze.frag">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="maze.old.frag">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="maze.old.vert">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="maze.vert">
+      <Filter>Header Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>
