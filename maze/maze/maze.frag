@@ -232,8 +232,8 @@ uniform bool isBlock;
 void main()
 {
 	if (isBlock) {
-		gl_FragColor = wangSample(tex, fragTexCoord * vec2(4.0f, 4.0f));
-		//gl_FragColor = texture2D(tex, fragTexCoord);
+		gl_FragColor = wangSample(tex, fragTexCoord * vec2(16.0f, 16.0f));
+		//gl_FragColor = texture2D(tex, fragTexCoord * vec2(16.0f, 16.0f));
 	} else {
 		gl_FragColor = fragColor;
 	}
