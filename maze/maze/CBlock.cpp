@@ -143,7 +143,7 @@ int CBlock::Load(void)
 	m_isBlockId = glGetUniformLocation(CShader::GetInstance()->Program(), "isBlock");
 	cout << "isBlock index: " << m_isBlockId << endl;
 
-	m_texImageId = CTexture::GetInstance()->Load("puzzle.jpg");
+	m_texImageId = CTexture::GetInstance()->Load("asdf.jpg");
 	if (m_texImageId == 0) {
 		cerr << "Failed to create a texture image id" << endl;
 	}
