@@ -4,8 +4,6 @@
 
 #include "CObject.h"
 
-//bool showtex = false;
-
 // User Interface : Windows & input event handlers
 class CUI {
 private:

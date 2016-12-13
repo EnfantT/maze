@@ -17,7 +17,6 @@
 #include "CPlayer.h"
 #include "CPerspective.h"
 #include "CModel.h"
-#include "CBlock.h"
 
 using namespace std;
 
@@ -25,8 +24,6 @@ CUI *CUI::m_instance = NULL;
 float CUI::m_ptrX = 0.0f;
 float CUI::m_ptrY = 0.0f;
 bool CUI::m_ptrMoved = false;
-
-
 
 void CUI::errorCB(int error, const char *description)
 {
@@ -66,7 +63,7 @@ void CUI::ptrCB(GLFWwindow *win, double x, double y)
 		else
 			yd = 180.0f - yd;
 
-		//CUI::GetInstance()->ControlTarget()->Rotate(vec3(1.0f, 0.0f, 0.0f), PI / yd);
+		// CUI::GetInstance()->ControlTarget()->Rotate(vec3(1.0f, 0.0f, 0.0f), PI / yd);
 	}
 	
 	m_ptrX = x;
@@ -81,7 +78,7 @@ void resizeCB(GLFWwindow* win, int width, int height)
 
 void CUI::keyCB(GLFWwindow *win, int key, int scancode, int action, int mods)
 {
-	static GLenum flag = GL_FILL;	
+	static GLenum flag = GL_FILL;
 	vec4 move(0.0f, 0.0f, 0.0f, 0.0f);
 
 	if (!CUI::GetInstance()->ControlTarget())
@@ -150,9 +147,6 @@ void CUI::keyCB(GLFWwindow *win, int key, int scancode, int action, int mods)
 			// GL_FILL : Filling with colors.
 			// GL_LINE : Drawing lines only.
 			glPolygonMode(GL_FRONT_AND_BACK, flag);
-			break;
-		case GLFW_KEY_T:
-			//showtex != showtex;
 			break;
 		default:
 			cout << "Key error" << endl;
