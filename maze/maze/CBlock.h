@@ -13,8 +13,7 @@ private:
 
 	bool m_geometry_updated;
 	bool m_color_updated;
-	bool m_loaded;
-	
+	bool m_loaded;	
 
 	CBlock(void);
 	virtual ~CBlock(void);

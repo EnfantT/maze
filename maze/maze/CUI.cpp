@@ -149,8 +149,7 @@ void CUI::keyCB(GLFWwindow *win, int key, int scancode, int action, int mods)
 			// GL_FILL : Filling with colors.
 			// GL_LINE : Drawing lines only.
 			glPolygonMode(GL_FRONT_AND_BACK, flag);
-		case GLFW_KEY_T:
-			
+		case GLFW_KEY_T:			
 			CBlock::GetInstance()->ChangeTex();
 			break;
 		default:

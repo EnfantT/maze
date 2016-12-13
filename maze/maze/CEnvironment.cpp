@@ -13,6 +13,7 @@
 #include "CModel.h"
 #include "CPerspective.h"
 #include "CView.h"
+#include "CTexture.h"
 
 using namespace std;
 
@@ -50,6 +51,8 @@ void CEnvironment::Destroy(void)
 
 int CEnvironment::Load(void)
 {
+
+	
 	return 0;
 }
 
@@ -59,6 +62,7 @@ int CEnvironment::Render(void)
 
 	mvp = CPerspective::GetInstance()->Matrix() * CView::GetInstance()->Matrix() * CModel::GetInstance()->Matrix();
 
+	
 	glUniformMatrix4fv(CShader::GetInstance()->MVPId(), 1, GL_TRUE, (const GLfloat *)mvp);
 	StatusPrint();
 

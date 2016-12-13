@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
 {
 	CShader *shader;
 	CVertices *vertices;
-	CPlayer *player;
+//	CPlayer *player;
 	CBlock *block;
 	CCoordinate *coord;
 	CEnvironment *env;
@@ -58,6 +58,7 @@ int main(int argc, char *argv[])
 		return -EFAULT;
 	}
 
+/*
 	player = CPlayer::GetInstance();
 	if (!player) {
 		vertices->Destroy();
@@ -65,10 +66,11 @@ int main(int argc, char *argv[])
 		ui->DestroyContext();
 		return -EFAULT;
 	}
+*/
 
 	block = CBlock::GetInstance();
 	if (!block) {
-		player->Destroy();
+		//player->Destroy();
 		vertices->Destroy();
 		shader->Destroy();
 		ui->DestroyContext();
@@ -78,7 +80,7 @@ int main(int argc, char *argv[])
 	coord = CCoordinate::GetInstance();
 	if (!coord) {
 		block->Destroy();
-		player->Destroy();
+		//player->Destroy();
 		vertices->Destroy();
 		shader->Destroy();
 		ui->DestroyContext();
@@ -89,7 +91,7 @@ int main(int argc, char *argv[])
 	if (!env) {
 		coord->Destroy();
 		block->Destroy();
-		player->Destroy();
+		//player->Destroy();
 		vertices->Destroy();
 		shader->Destroy();
 		ui->DestroyContext();
@@ -106,24 +108,24 @@ int main(int argc, char *argv[])
 
 	vertices->Load();
 	block->Load();
-	player->Load();
+	//player->Load();
 	coord->Load();
 	env->Load();
 
 	ui->AddObject(env);
 	ui->AddObject(block);
-	ui->AddObject(player);
+//	ui->AddObject(player);
 	ui->AddObject(coord);
 
 	ui->Run();
 
 	ui->DelObject(env);
 	ui->DelObject(coord);
-	ui->DelObject(player);
+//	ui->DelObject(player);
 	ui->DelObject(block);
 
 	coord->Destroy();
-	player->Destroy();
+//	player->Destroy();
 	block->Destroy();
 	env->Destroy();
 

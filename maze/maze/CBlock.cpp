@@ -118,7 +118,7 @@ void CBlock::Destroy(void)
 void CBlock::ChangeTex(void)
 {
 	showtex = !showtex;	
-	cout << "showtex" << endl;
+	//cout << "showtex" << endl;
 	Load();
 }
 
@@ -154,14 +154,14 @@ int CBlock::Load(void)
 	m_isBlockId = glGetUniformLocation(CShader::GetInstance()->Program(), "isBlock");
 	cout << "isBlock index: " << m_isBlockId << endl;
 
-	m_texImageId = CTexture::GetInstance()->Load();//"test.jpg");
+	m_texImageId = CTexture::GetInstance()->Load();
 	if (m_texImageId == 0) {
 		cerr << "Failed to create a texture image id" << endl;
 	}
 	else {
 		GLint texId; // Texture Sampler 2D
 
-		cout << "showtex " << showtex << endl;
+		//cout << "showtex " << showtex << endl;
 
 		if(showtex)
 			glActiveTexture(GL_TEXTURE0);

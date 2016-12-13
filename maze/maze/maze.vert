@@ -17,5 +17,6 @@ void main()
 		gl_Position = mvp * position;
 		fragColor = color;
 		fragTexCoord = vec2(0.0f, 0.0f);
+
 	}
 }
