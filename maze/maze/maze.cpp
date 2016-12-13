@@ -58,6 +58,7 @@ int main(int argc, char *argv[])
 		return -EFAULT;
 	}
 
+	
 	player = CPlayer::GetInstance();
 	if (!player) {
 		vertices->Destroy();
@@ -65,6 +66,7 @@ int main(int argc, char *argv[])
 		ui->DestroyContext();
 		return -EFAULT;
 	}
+	
 
 	block = CBlock::GetInstance();
 	if (!block) {
@@ -105,8 +107,8 @@ int main(int argc, char *argv[])
 		shader->Load(CMisc::m_vertexShaderFile, CMisc::m_fragmentShaderFile);
 
 	vertices->Load();
-	block->Load();
 	player->Load();
+	block->Load();	
 	coord->Load();
 	env->Load();
 

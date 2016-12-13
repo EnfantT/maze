@@ -1,17 +1,17 @@
 #version 130
 #define GLSL
-#define FLIP_V
+
 
 // just a sample that guarantees using the highest mip level
 /*
 #ifndef GRID_SAMPLE
-        #define GRID_SAMPLE(uv) texture2D(wangSampler, uv, -999.0)
+        #define GRID_SAMPLE(uv) texture2D(Tile_Tex, uv, -999.0)
 #endif
 */
 
 #define HASH(in1, in2) (int(fract(sin(dot(vec2(in1+2*in2, in1+in2),vec2(12.9898,78.233))) * 43758.5453) > 0.5))
 
-vec4 wangSample(sampler2D texSampler, vec2 uv)
+vec4 Tile_Tex(sampler2D texSampler, vec2 uv)
 {
     //uv.y = 1.0-uv.y;
 
@@ -151,16 +151,25 @@ vec4 wangSample(sampler2D texSampler, vec2 uv)
 in vec4 fragColor;
 in vec2 fragTexCoord;
 uniform sampler2D tex;
+uniform sampler2D tex_F;
 uniform bool isBlock;
+uniform bool isFloor;
 
 void main()
 {
 	
 	if (isBlock) {
-		gl_FragColor = wangSample(tex, fragTexCoord * vec2(4.0f, 4.0f));
+		gl_FragColor = Tile_Tex(tex, fragTexCoord * vec2(4.0f, 4.0f));
 		//gl_FragColor = texture2D(tex, fragTexCoord);		
 		//gl_FragColor = texture2D(tex, fragTexCoord * vec2(1.0f, -1.0f));		
-	} else {
+	
+	}
+	/* else if(isFloor){
+		gl_FragColor = Tile_Tex(tex, fragTexCoord * vec2(64.0f, 64.0f));
+	}
+	*/
+	else {
 		gl_FragColor = fragColor;
 	}
+	
 }

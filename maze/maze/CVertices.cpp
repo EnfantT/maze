@@ -48,6 +48,8 @@ const CVertices::VertexInfo CVertices::m_vertices[] = {
 	{ vec3(-1000.0f, -BLOCK_WIDTH, -1000.0f), vec4(0.9f, 0.8f, 0.7f, 1.0f) }, // Land
 };
 
+
+
 // 0, 1, 2 == 0 +++
 // 3, 4, 5 == 1 -++
 // 6, 7    == 2 --+

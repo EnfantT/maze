@@ -8,6 +8,8 @@ private:
 	virtual ~CEnvironment(void);
 	static CEnvironment *m_instance;
 	GLint m_isEnvIdx;
+	GLuint m_FloortexImageId;
+	GLuint m_VBO; // Vertex Buffer Object
 
 public:
 	static CEnvironment *GetInstance(void);

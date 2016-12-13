@@ -25,6 +25,7 @@
 #include "CPerspective.h"
 #include "CView.h"
 #include "CTexture.h"
+#include "CUI.h"
 
 using namespace std;
 
@@ -143,13 +144,18 @@ int CBlock::Load(void)
 	m_isBlockId = glGetUniformLocation(CShader::GetInstance()->Program(), "isBlock");
 	cout << "isBlock index: " << m_isBlockId << endl;
 
-	m_texImageId = CTexture::GetInstance()->Load("asdf.jpg");
+	m_texImageId = CTexture::GetInstance()->Load();// "test.jpg", 0);
 	if (m_texImageId == 0) {
 		cerr << "Failed to create a texture image id" << endl;
 	}
 	else {
 		GLint texId; // Texture Sampler 2D
-		glActiveTexture(GL_TEXTURE0);
+		
+		//if(showtex)
+			glActiveTexture(GL_TEXTURE0);
+		//else
+		//	glActiveTexture(GL_TEXTURE1);
+
 		glBindTexture(GL_TEXTURE_2D, m_texImageId);
 
 		texId = glGetUniformLocation(CShader::GetInstance()->Program(), "tex");
@@ -182,7 +188,7 @@ int CBlock::Render(void)
 			StatusPrint();
 		}
 	} else {
-		glDrawElementsInstanced(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0, m_iCount);
+		glDrawElementsInstanced(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0, m_iCount);		
 		StatusPrint();
 	}
 	glUniform1i(m_isBlockId, 0);
