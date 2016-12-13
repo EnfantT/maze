@@ -31,6 +31,8 @@ using namespace std;
 CBlock *CBlock::m_instance = NULL;
 #define MAZE_SIZE 10
 
+bool showtex=false;
+
 CBlock::CBlock(void)
 : m_geometry_updated(true)
 , m_color_updated(true)
@@ -105,10 +107,19 @@ CBlock *CBlock::GetInstance(void)
 	return m_instance;
 }
 
+
+
 void CBlock::Destroy(void)
 {
 	m_instance = NULL;
 	delete this;
+}
+
+void CBlock::ChangeTex(void)
+{
+	showtex = !showtex;	
+	cout << "showtex" << endl;
+	Load();
 }
 
 int CBlock::Load(void)
@@ -143,13 +154,19 @@ int CBlock::Load(void)
 	m_isBlockId = glGetUniformLocation(CShader::GetInstance()->Program(), "isBlock");
 	cout << "isBlock index: " << m_isBlockId << endl;
 
-	m_texImageId = CTexture::GetInstance()->Load("asdf.jpg");
+	m_texImageId = CTexture::GetInstance()->Load();//"test.jpg");
 	if (m_texImageId == 0) {
 		cerr << "Failed to create a texture image id" << endl;
 	}
 	else {
 		GLint texId; // Texture Sampler 2D
-		glActiveTexture(GL_TEXTURE0);
+
+		cout << "showtex " << showtex << endl;
+
+		if(showtex)
+			glActiveTexture(GL_TEXTURE0);
+		else
+			glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, m_texImageId);
 
 		texId = glGetUniformLocation(CShader::GetInstance()->Program(), "tex");

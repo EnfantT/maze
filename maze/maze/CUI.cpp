@@ -17,6 +17,7 @@
 #include "CPlayer.h"
 #include "CPerspective.h"
 #include "CModel.h"
+#include "CBlock.h"
 
 using namespace std;
 
@@ -79,6 +80,7 @@ void resizeCB(GLFWwindow* win, int width, int height)
 void CUI::keyCB(GLFWwindow *win, int key, int scancode, int action, int mods)
 {
 	static GLenum flag = GL_FILL;
+	
 	vec4 move(0.0f, 0.0f, 0.0f, 0.0f);
 
 	if (!CUI::GetInstance()->ControlTarget())
@@ -147,6 +149,9 @@ void CUI::keyCB(GLFWwindow *win, int key, int scancode, int action, int mods)
 			// GL_FILL : Filling with colors.
 			// GL_LINE : Drawing lines only.
 			glPolygonMode(GL_FRONT_AND_BACK, flag);
+		case GLFW_KEY_T:
+			
+			CBlock::GetInstance()->ChangeTex();
 			break;
 		default:
 			cout << "Key error" << endl;
@@ -214,7 +219,7 @@ int CUI::CreateContext(int w, int h, const char *title)
 	}
 
 	if (!title)
-		title = "unnamed";
+		title = "Tile-base Texture Mapping";
 
 	m_win = glfwCreateWindow(w, h, title, NULL, NULL);
 	if (!m_win)

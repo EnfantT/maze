@@ -14,6 +14,7 @@ private:
 	bool m_geometry_updated;
 	bool m_color_updated;
 	bool m_loaded;
+	
 
 	CBlock(void);
 	virtual ~CBlock(void);
@@ -24,7 +25,7 @@ public:
 
 	static CBlock *GetInstance(void);
 	void Destroy(void);
-
+	void ChangeTex(void);
 	int Load(void);
 	int Render(void);
 };
