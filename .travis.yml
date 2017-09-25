@@ -1,5 +1,5 @@
 {
-  "language": c++,
+  "language": "cpp",
   "group": "stable",
   "dist": "trusty",
   "os": "linux"
